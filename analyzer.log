@@ -1,0 +1,107 @@
+2025-06-05 12:01:14,216 - __main__ - INFO - 🏢 Starting Business Analysis Tool
+2025-06-05 12:01:14,217 - __main__ - INFO - 🔗 Organization: Deloitte
+2025-06-05 12:01:14,217 - __main__ - INFO - 📊 Version: 2.0.0
+2025-06-05 12:01:14,217 - __main__ - INFO - 🌐 Starting on http://localhost:8000
+2025-06-05 12:02:20,451 - fastapi - WARNING - email-validator not installed, email fields will be treated as str.
+To install, run: pip install email-validator
+2025-06-05 12:16:12,499 - __main__ - INFO - 🏢 Starting Business Analysis Tool
+2025-06-05 12:16:12,500 - __main__ - INFO - 🔗 Organization: Deloitte
+2025-06-05 12:16:12,500 - __main__ - INFO - 📊 Version: 2.0.0
+2025-06-05 12:16:12,500 - __main__ - INFO - 🌐 Starting on http://localhost:8000
+2025-06-05 12:16:55,033 - fastapi - WARNING - email-validator not installed, email fields will be treated as str.
+To install, run: pip install email-validator
+2025-06-05 12:22:42,899 - __main__ - INFO - 🏢 Starting Business Analysis Tool
+2025-06-05 12:22:42,900 - __main__ - INFO - 🔗 Organization: Deloitte
+2025-06-05 12:22:42,900 - __main__ - INFO - 📊 Version: 2.0.0
+2025-06-05 12:22:42,900 - __main__ - INFO - 🌐 Starting on http://localhost:8000
+2025-06-05 12:23:16,346 - fastapi - WARNING - email-validator not installed, email fields will be treated as str.
+To install, run: pip install email-validator
+2025-06-05 12:28:56,887 - main - INFO - Audit: analysis_started - True - {'analysis_id': 'ANALYSIS_20250605_122856_0001', 'model': 'llama3', 'error_type': 'data_inconsistency', 'priority': 'standard', 'department': None, 'analyst_id': None}
+2025-06-05 12:29:08,077 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: sentence-transformers/all-MiniLM-L6-v2
+2025-06-05 12:29:10,257 - main - INFO - Audit: analysis_failed - False - {'analysis_id': 'ANALYSIS_20250605_122856_0001', 'error': 'The de-serialization relies loading a pickle file. Pickle files can be modified to deliver a malicious payload that results in execution of arbitrary code on your machine.You will need to set `allow_dangerous_deserialization` to `True` to enable deserialization. If you do this, make sure that you trust the source of the data. For example, if you are loading a file that you created, and know that no one else has modified the file, then this is safe to do. Do not set this to `True` if you are loading a file from an untrusted source (e.g., some random site on the internet.).'}
+2025-06-05 12:29:37,621 - main - INFO - Audit: analysis_started - True - {'analysis_id': 'ANALYSIS_20250605_122937_0003', 'model': 'llama3', 'error_type': 'data_inconsistency', 'priority': 'standard', 'department': None, 'analyst_id': None}
+2025-06-05 12:29:37,627 - main - INFO - Audit: llm_initialization - True - {'model': 'llama3'}
+2025-06-05 12:36:28,986 - main - INFO - Audit: analysis_completed - True - {'analysis_id': 'ANALYSIS_20250605_122937_0003', 'confidence_score': 0.85, 'business_priority': 'Medium', 'model_used': 'llama3'}
+2025-06-05 12:38:18,848 - main - INFO - Audit: analysis_started - True - {'analysis_id': 'ANALYSIS_20250605_123818_0001', 'model': 'llama3', 'error_type': 'data_inconsistency', 'priority': 'standard', 'department': None, 'analyst_id': None}
+2025-06-05 12:38:18,853 - main - INFO - Audit: llm_initialization - True - {'model': 'llama3'}
+2025-06-05 12:45:53,160 - main - INFO - Audit: analysis_completed - True - {'analysis_id': 'ANALYSIS_20250605_123818_0001', 'confidence_score': 0.85, 'business_priority': 'Mittel', 'model_used': 'llama3'}
+2025-06-05 12:47:27,629 - __main__ - INFO - 🏢 Starting Business Analysis Tool
+2025-06-05 12:47:27,631 - __main__ - INFO - 🔗 Organization: Deloitte
+2025-06-05 12:47:27,631 - __main__ - INFO - 📊 Version: 2.0.0
+2025-06-05 12:47:27,631 - __main__ - INFO - 🌐 Starting on http://localhost:8000
+2025-06-05 12:47:40,136 - main - INFO - Audit: analysis_started - True - {'analysis_id': 'ANALYSIS_20250605_124740_0001', 'model': 'gemma2', 'error_type': 'data_inconsistency', 'priority': 'standard', 'department': None, 'analyst_id': None}
+2025-06-05 12:47:49,004 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: sentence-transformers/all-MiniLM-L6-v2
+2025-06-05 12:47:51,258 - main - INFO - Audit: analysis_failed - False - {'analysis_id': 'ANALYSIS_20250605_124740_0001', 'error': 'The de-serialization relies loading a pickle file. Pickle files can be modified to deliver a malicious payload that results in execution of arbitrary code on your machine.You will need to set `allow_dangerous_deserialization` to `True` to enable deserialization. If you do this, make sure that you trust the source of the data. For example, if you are loading a file that you created, and know that no one else has modified the file, then this is safe to do. Do not set this to `True` if you are loading a file from an untrusted source (e.g., some random site on the internet.).'}
+2025-06-05 12:48:53,515 - main - INFO - Audit: analysis_started - True - {'analysis_id': 'ANALYSIS_20250605_124853_0003', 'model': 'mistral', 'error_type': 'data_inconsistency', 'priority': 'standard', 'department': None, 'analyst_id': None}
+2025-06-05 12:48:53,516 - main - INFO - Audit: analysis_failed - False - {'analysis_id': 'ANALYSIS_20250605_124853_0003', 'error': 'The de-serialization relies loading a pickle file. Pickle files can be modified to deliver a malicious payload that results in execution of arbitrary code on your machine.You will need to set `allow_dangerous_deserialization` to `True` to enable deserialization. If you do this, make sure that you trust the source of the data. For example, if you are loading a file that you created, and know that no one else has modified the file, then this is safe to do. Do not set this to `True` if you are loading a file from an untrusted source (e.g., some random site on the internet.).'}
+2025-06-05 12:48:56,932 - main - INFO - Audit: analysis_started - True - {'analysis_id': 'ANALYSIS_20250605_124856_0005', 'model': 'mistral', 'error_type': 'data_inconsistency', 'priority': 'standard', 'department': None, 'analyst_id': None}
+2025-06-05 12:48:56,933 - main - INFO - Audit: analysis_failed - False - {'analysis_id': 'ANALYSIS_20250605_124856_0005', 'error': 'The de-serialization relies loading a pickle file. Pickle files can be modified to deliver a malicious payload that results in execution of arbitrary code on your machine.You will need to set `allow_dangerous_deserialization` to `True` to enable deserialization. If you do this, make sure that you trust the source of the data. For example, if you are loading a file that you created, and know that no one else has modified the file, then this is safe to do. Do not set this to `True` if you are loading a file from an untrusted source (e.g., some random site on the internet.).'}
+2025-06-05 12:49:10,140 - main - INFO - Audit: analysis_started - True - {'analysis_id': 'ANALYSIS_20250605_124910_0007', 'model': 'mistral', 'error_type': 'data_inconsistency', 'priority': 'standard', 'department': None, 'analyst_id': None}
+2025-06-05 12:49:10,141 - main - INFO - Audit: analysis_failed - False - {'analysis_id': 'ANALYSIS_20250605_124910_0007', 'error': 'The de-serialization relies loading a pickle file. Pickle files can be modified to deliver a malicious payload that results in execution of arbitrary code on your machine.You will need to set `allow_dangerous_deserialization` to `True` to enable deserialization. If you do this, make sure that you trust the source of the data. For example, if you are loading a file that you created, and know that no one else has modified the file, then this is safe to do. Do not set this to `True` if you are loading a file from an untrusted source (e.g., some random site on the internet.).'}
+2025-06-05 13:03:41,489 - __main__ - INFO - 🏢 Starting Business Analysis Tool
+2025-06-05 13:03:41,490 - __main__ - INFO - 🔗 Organization: Deloitte
+2025-06-05 13:03:41,490 - __main__ - INFO - 📊 Version: 2.0.0
+2025-06-05 13:03:41,490 - __main__ - INFO - 🌐 Starting on http://localhost:8000
+2025-06-05 13:05:50,467 - main - INFO - Audit: analysis_started - True - {'analysis_id': 'ANALYSIS_20250605_130550_0001', 'model': 'gemma2', 'error_type': 'data_inconsistency', 'priority': 'standard', 'department': None, 'analyst_id': None}
+2025-06-05 13:05:50,470 - main - INFO - Audit: llm_initialization - True - {'model': 'gemma2'}
+2025-06-05 13:14:01,743 - main - INFO - Audit: analysis_completed - True - {'analysis_id': 'ANALYSIS_20250605_130550_0001', 'confidence_score': 0.85, 'business_priority': 'Mittel', 'model_used': 'gemma2'}
+2025-06-05 13:17:19,693 - __main__ - INFO - 🏢 Starting Business Analysis Tool
+2025-06-05 13:17:19,695 - __main__ - INFO - 🔗 Organization: Deloitte
+2025-06-05 13:17:19,696 - __main__ - INFO - 📊 Version: 2.0.0
+2025-06-05 13:17:19,696 - __main__ - INFO - 🌐 Starting on http://localhost:8000
+2025-06-05 13:23:16,363 - main - INFO - Audit: analysis_started - True - {'analysis_id': 'ANALYSIS_20250605_132316_0001', 'model': 'gemma2', 'error_type': 'data_inconsistency', 'priority': 'standard', 'department': None, 'analyst_id': None}
+2025-06-05 13:23:25,005 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: sentence-transformers/all-MiniLM-L6-v2
+2025-06-05 13:23:27,135 - faiss.loader - INFO - Loading faiss with AVX512 support.
+2025-06-05 13:23:27,136 - faiss.loader - INFO - Could not load library with AVX512 support due to:
+ModuleNotFoundError("No module named 'faiss.swigfaiss_avx512'")
+2025-06-05 13:23:27,136 - faiss.loader - INFO - Loading faiss with AVX2 support.
+2025-06-05 13:23:28,185 - faiss.loader - INFO - Successfully loaded faiss with AVX2 support.
+2025-06-05 13:23:28,194 - faiss - INFO - Failed to load GPU Faiss: name 'GpuIndexIVFFlat' is not defined. Will not load constructor refs for GPU indexes. This is only an error if you're trying to use GPU Faiss.
+2025-06-05 13:23:28,247 - main - INFO - Audit: llm_initialization - True - {'model': 'gemma2'}
+2025-06-05 13:25:25,594 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/generate "HTTP/1.1 200 OK"
+2025-06-05 13:29:38,743 - main - INFO - Audit: analysis_completed - True - {'analysis_id': 'ANALYSIS_20250605_132316_0001', 'confidence_score': 0.85, 'business_priority': 'Mittel', 'model_used': 'gemma2'}
+2025-06-05 16:07:51,222 - __main__ - INFO - 🏢 Starting Business Analysis Tool
+2025-06-05 16:07:51,225 - __main__ - INFO - 🔗 Organization: Deloitte
+2025-06-05 16:07:51,225 - __main__ - INFO - 📊 Version: 2.0.0
+2025-06-05 16:07:51,226 - __main__ - INFO - 🌐 Starting on http://localhost:8000
+2025-06-06 10:51:01,210 - __main__ - INFO - 🏢 Starting Business Analysis Tool
+2025-06-06 10:51:01,212 - __main__ - INFO - 🔗 Organization: Deloitte
+2025-06-06 10:51:01,212 - __main__ - INFO - 📊 Version: 2.0.0
+2025-06-06 10:51:01,212 - __main__ - INFO - 🌐 Starting on http://localhost:8000
+2025-06-07 23:57:26,149 - __main__ - INFO - 🏢 Starting Business Analysis Tool
+2025-06-07 23:57:26,151 - __main__ - INFO - 🔗 Organization: Deloitte
+2025-06-07 23:57:26,152 - __main__ - INFO - 📊 Version: 2.0.0
+2025-06-07 23:57:26,152 - __main__ - INFO - 🌐 Starting on http://localhost:8000
+2025-07-03 11:04:46,554 - __main__ - INFO - 🏢 Starting Business Analysis Tool
+2025-07-03 11:04:46,555 - __main__ - INFO - 🔗 Organization: Deloitte
+2025-07-03 11:04:46,555 - __main__ - INFO - 📊 Version: 2.0.0
+2025-07-03 11:04:46,555 - __main__ - INFO - 🌐 Starting on http://localhost:8000
+2025-07-08 15:07:30,851 - __main__ - INFO - 🏢 Starting Business Analysis Tool
+2025-07-08 15:07:30,852 - __main__ - INFO - 🔗 Organization: Deloitte
+2025-07-08 15:07:30,852 - __main__ - INFO - 📊 Version: 2.0.0
+2025-07-08 15:07:30,852 - __main__ - INFO - 🌐 Starting on http://localhost:8000
+2025-07-09 13:38:52,899 - __main__ - INFO - 🏢 Starting Business Analysis Tool v2.1.0
+2025-07-09 13:38:52,900 - __main__ - INFO - 🔗 Organization: Deloitte
+2025-07-09 13:38:52,900 - __main__ - INFO - 📱 Mobile optimized: Yes
+2025-07-09 13:38:52,900 - __main__ - INFO - 🤖 LLM Integration: Ollama + Gemini
+2025-07-09 13:38:52,900 - __main__ - INFO - 🌐 Starting on http://localhost:8000
+2025-07-09 15:25:00,798 - __main__ - INFO - 🏢 Starting Business Analysis Tool v2.1.0
+2025-07-09 15:25:00,800 - __main__ - INFO - 🔗 Organization: Deloitte
+2025-07-09 15:25:00,800 - __main__ - INFO - 📱 Mobile optimized: Yes
+2025-07-09 15:25:00,800 - __main__ - INFO - 🤖 LLM Integration: Ollama + Gemini
+2025-07-09 15:25:00,800 - __main__ - INFO - 🌐 Starting on http://localhost:8000
+2025-07-11 19:19:02,447 - __main__ - INFO - 🏢 Starting Business Analysis Tool v2.1.0
+2025-07-11 19:19:02,448 - __main__ - INFO - 🔗 Organization: Deloitte
+2025-07-11 19:19:02,448 - __main__ - INFO - 📱 Mobile optimized: Yes
+2025-07-11 19:19:02,449 - __main__ - INFO - 🤖 LLM Integration: Ollama + Gemini
+2025-07-11 19:19:02,449 - __main__ - INFO - 🌐 Starting on http://localhost:8000
+2025-07-14 14:01:50,201 - __main__ - INFO - 🏢 Starting Business Analysis Tool v2.1.0
+2025-07-14 14:01:50,202 - __main__ - INFO - 🔗 Organization: Deloitte
+2025-07-14 14:01:50,202 - __main__ - INFO - 📱 Mobile optimized: Yes
+2025-07-14 14:01:50,202 - __main__ - INFO - 🤖 LLM Integration: Ollama + Gemini
+2025-07-14 14:01:50,202 - __main__ - INFO - 🌐 Starting on http://localhost:8000
+2025-07-14 14:02:20,591 - __main__ - INFO - 🏢 Starting Business Analysis Tool v2.1.0
+2025-07-14 14:02:20,595 - __main__ - INFO - 🔗 Organization: Deloitte
+2025-07-14 14:02:20,595 - __main__ - INFO - 📱 Mobile optimized: Yes
+2025-07-14 14:02:20,595 - __main__ - INFO - 🤖 LLM Integration: Ollama + Gemini
+2025-07-14 14:02:20,595 - __main__ - INFO - 🌐 Starting on http://localhost:8000

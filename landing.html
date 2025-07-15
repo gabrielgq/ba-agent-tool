@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Analyst Agent - KI-gestützte Dokumentenanalyse</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Corporate Colors - Customize these */
+            --brand-primary: #86bc25;
+            --brand-secondary: #0d2818;
+            --transition: all 0.3s ease;
+            --border-radius: 8px;
+            --border-radius-lg: 12px;
+        }
+
+        /* Enhanced Light Theme */
+        [data-theme="light"] {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --bg-tertiary: #e9ecef;
+            --text-primary: #1a1a1a;
+            --text-secondary: #6c757d;
+            --text-muted: #868e96;
+            --border-color: #e0e0e0;
+            --border-hover: #ced4da;
+            --card-bg: #ffffff;
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.06);
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.12);
+            --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.15);
+            --brand-accent: #d4edda;
+            --brand-accent-hover: #c3e6cb;
+            --glass-bg: rgba(255, 255, 255, 0.8);
+            --glass-border: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Enhanced Dark Theme */
+        [data-theme="dark"] {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #21262d;
+            --text-primary: #f0f6fc;
+            --text-secondary: #8b949e;
+            --text-muted: #6e7681;
+            --border-color: #30363d;
+            --border-hover: #40464e;
+            --card-bg: #161b22;
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.2);
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            --shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.6);
+            --brand-accent: rgba(134, 188, 37, 0.1);
+            --brand-accent-hover: rgba(134, 188, 37, 0.15);
+            --glass-bg: rgba(22, 27, 34, 0.8);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Auto theme detection fallback */
+        @media (prefers-color-scheme: light) {
+            :root:not([data-theme]) {
+                --bg-primary: #ffffff;
+                --bg-secondary: #f8f9fa;
+                --bg-tertiary: #e9ecef;
+                --text-primary: #1a1a1a;
+                --text-secondary: #6c757d;
+                --text-muted: #868e96;
+                --border-color: #e0e0e0;
+                --border-hover: #ced4da;
+                --card-bg: #ffffff;
+                --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.06);
+                --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+                --shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.12);
+                --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.15);
+                --brand-accent: #d4edda;
+                --brand-accent-hover: #c3e6cb;
+                --glass-bg: rgba(255, 255, 255, 0.8);
+                --glass-border: rgba(255, 255, 255, 0.2);
+            }
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root:not([data-theme]) {
+                --bg-primary: #0d1117;
+                --bg-secondary: #161b22;
+                --bg-tertiary: #21262d;
+                --text-primary: #f0f6fc;
+                --text-secondary: #8b949e;
+                --text-muted: #6e7681;
+                --border-color: #30363d;
+                --border-hover: #40464e;
+                --card-bg: #161b22;
+                --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.2);
+                --shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+                --shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.4);
+                --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.6);
+                --brand-accent: rgba(134, 188, 37, 0.1);
+                --brand-accent-hover: rgba(134, 188, 37, 0.15);
+                --glass-bg: rgba(22, 27, 34, 0.8);
+                --glass-border: rgba(255, 255, 255, 0.1);
+            }
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Aptos, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            transition: var(--transition);
+            overflow-x: hidden;
+        }
+
+        /* Theme Toggle Button - Mobile Optimized */
+        .theme-toggle {
+            position: relative;
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border-color);
+            border-radius: 20px;
+            padding: 0.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            min-width: 50px;
+            min-height: 40px;
+            touch-action: manipulation;
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--brand-primary);
+            transform: scale(1.05);
+        }
+
+        .theme-icon {
+            font-size: 1.1rem;
+            transition: var(--transition);
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .theme-icon.sun {
+            opacity: 1;
+        }
+
+        .theme-icon.moon {
+            opacity: 0;
+        }
+
+        [data-theme="dark"] .theme-icon.sun {
+            opacity: 0;
+        }
+
+        [data-theme="dark"] .theme-icon.moon {
+            opacity: 1;
+        }
+
+        /* Navigation - Mobile Optimized */
+        .navbar {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-shrink: 0;
+        }
+
+        .brand-logo {
+            height: 28px;
+            transition: var(--transition);
+        }
+
+        [data-theme="dark"] .brand-logo {
+            filter: brightness(0) invert(1);
+        }
+
+        .brand-text {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            white-space: nowrap;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-cta {
+            background: var(--brand-primary);
+            color: white;
+            padding: 0.75rem 1.25rem;
+            border-radius: var(--border-radius);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            touch-action: manipulation;
+        }
+
+        .nav-cta:hover {
+            background: #6fa020;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        /* Hero Section - Mobile Optimized */
+        .hero {
+            padding: 2rem 1rem;
+            text-align: center;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            position: relative;
+            overflow: hidden;
+            min-height: 60vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(134, 188, 37, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(134, 188, 37, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: var(--brand-primary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .hero h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--brand-primary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--brand-primary);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: var(--border-radius);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+            touch-action: manipulation;
+        }
+
+        .hero-cta::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .hero-cta:hover::before {
+            left: 100%;
+        }
+
+        .hero-cta:hover {
+            background: #6fa020;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        /* Features Section - Mobile Optimized */
+        .features {
+            padding: 3rem 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .features-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .features-header h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .features-header p {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .feature-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-lg);
+            padding: 1.5rem;
+            text-align: center;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--brand-primary), #6fa020);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--brand-primary);
+        }
+
+        .feature-icon {
+            width: 50px;
+            height: 50px;
+            margin: 0 auto 1rem;
+            background: linear-gradient(135deg, var(--brand-primary), #6fa020);
+            border-radius: var(--border-radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            color: white;
+            transition: var(--transition);
+        }
+
+        .feature-card:hover .feature-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .feature-card h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+        }
+
+        .feature-card p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            font-size: 0.9rem;
+        }
+
+        /* Process Section - Mobile Optimized */
+        .process {
+            background: var(--bg-secondary);
+            padding: 3rem 1rem;
+        }
+
+        .process-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .process h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: var(--text-primary);
+        }
+
+        .process-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .process-step {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: var(--border-radius-lg);
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .process-step:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--brand-primary);
+        }
+
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 35px;
+            height: 35px;
+            background: linear-gradient(135deg, var(--brand-primary), #6fa020);
+            color: white;
+            border-radius: 50%;
+            font-weight: bold;
+            margin: 0 auto 1rem;
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+
+        .process-step:hover .step-number {
+            transform: scale(1.15);
+        }
+
+        .process-step h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .process-step p {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        /* CTA Section - Mobile Optimized */
+        .cta-section {
+            padding: 3rem 1rem;
+            text-align: center;
+            background: linear-gradient(135deg, var(--brand-primary), #6fa020);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 30% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 70% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .cta-content {
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta-section h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .cta-section p {
+            font-size: 1rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: white;
+            color: var(--brand-primary);
+            padding: 1rem 2rem;
+            border-radius: var(--border-radius);
+            text-decoration: none;
+            font-weight: 700;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+            touch-action: manipulation;
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(134, 188, 37, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .cta-button:hover::before {
+            left: 100%;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        /* Footer - Mobile Optimized */
+        .footer {
+            background: var(--bg-secondary);
+            padding: 2rem 1rem;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .footer-brand {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-logo {
+            height: 22px;
+            transition: var(--transition);
+        }
+
+        [data-theme="dark"] .footer-logo {
+            filter: brightness(0) invert(1);
+        }
+
+        .footer-text {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        /* Loading animation for theme switch */
+        .theme-switching {
+            pointer-events: none;
+        }
+
+        .theme-switching * {
+            transition: none !important;
+        }
+
+        /* Mobile-Specific Responsive Styles */
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 0 1rem;
+            }
+
+            .nav-brand {
+                order: 1;
+            }
+
+            .nav-actions {
+                order: 2;
+                width: 100%;
+                justify-content: center;
+            }
+
+            .brand-text {
+                font-size: 0.9rem;
+            }
+
+            .hero {
+                min-height: 50vh;
+                padding: 2rem 1rem;
+            }
+
+            .hero h1 {
+                font-size: 1.75rem;
+            }
+
+            .hero p {
+                font-size: 0.9rem;
+            }
+
+            .hero-cta {
+                padding: 0.875rem 1.5rem;
+                font-size: 0.9rem;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .feature-card {
+                padding: 1.25rem;
+            }
+
+            .feature-card h3 {
+                font-size: 1rem;
+            }
+
+            .feature-card p {
+                font-size: 0.85rem;
+            }
+
+            .process-steps {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .process-step {
+                padding: 1.25rem;
+            }
+
+            .features-header h2,
+            .process h2,
+            .cta-section h2 {
+                font-size: 1.5rem;
+            }
+
+            .cta-section p {
+                font-size: 0.9rem;
+            }
+
+            .cta-button {
+                padding: 0.875rem 1.5rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Extra small screens */
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 1.5rem;
+            }
+
+            .hero p {
+                font-size: 0.85rem;
+            }
+
+            .hero-cta {
+                padding: 0.75rem 1.25rem;
+                font-size: 0.85rem;
+            }
+
+            .features-grid {
+                gap: 0.75rem;
+            }
+
+            .feature-card,
+            .process-step {
+                padding: 1rem;
+            }
+
+            .features-header h2,
+            .process h2,
+            .cta-section h2 {
+                font-size: 1.25rem;
+            }
+
+            .footer-brand {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .footer-text {
+                font-size: 0.8rem;
+            }
+        }
+
+        /* Landscape orientation on mobile */
+        @media (max-width: 768px) and (orientation: landscape) {
+            .hero {
+                min-height: 70vh;
+            }
+            
+            .nav-container {
+                flex-direction: row;
+                justify-content: space-between;
+            }
+            
+            .nav-actions {
+                width: auto;
+            }
+        }
+
+        /* Touch-friendly improvements */
+        @media (hover: none) and (pointer: coarse) {
+            .theme-toggle:hover,
+            .nav-cta:hover,
+            .hero-cta:hover,
+            .feature-card:hover,
+            .process-step:hover,
+            .cta-button:hover {
+                transform: none;
+            }
+            
+            .feature-card:hover .feature-icon,
+            .process-step:hover .step-number {
+                transform: none;
+            }
+        }
+
+        /* Accessibility */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* Focus styles */
+        .theme-toggle:focus,
+        .nav-cta:focus,
+        .hero-cta:focus,
+        .cta-button:focus {
+            outline: 2px solid var(--brand-primary);
+            outline-offset: 2px;
+        }
+
+        /* Prevent zoom on form inputs on iOS */
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        textarea,
+        select {
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/5/56/Deloitte.svg" alt="{{CORPORATE_NAME}}" class="brand-logo">
+                <span class="brand-text">Business Analyst Agent</span>
+            </div>
+            <div class="nav-actions">
+                <button class="theme-toggle" onclick="toggleTheme()" aria-label="Theme umschalten">
+                    <span class="theme-icon sun">☀️</span>
+                    <span class="theme-icon moon">🌙</span>
+                </button>
+                <a href="/analyzer" class="nav-cta">Agent starten</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Business Analyst Agent</h1>
+            <p>
+                Intelligenter KI-Agent für Business Analysten. Lädt Dokumente hoch, 
+                erstellt automatisch eine Vektordatenbank und beantwortet komplexe Fragen 
+                durch intelligente Dokumentenanalyse und kontextbasierte RAG-Technologie.
+            </p>
+            <a href="/analyzer" class="hero-cta">
+                <span>Agent starten</span>
+                <span>→</span>
+            </a>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="features-header">
+            <h2>Intelligente RAG-basierte Dokumentenanalyse</h2>
+            <p>Fortschrittliche KI-Technologie für automatisierte Business-Analyse und Dokumentenverarbeitung.</p>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">📄</div>
+                <h3>Automatische Vektordatenbank</h3>
+                <p>Hochgeladene Dokumente werden automatisch in eine durchsuchbare Vektordatenbank eingebettet. Unterstützt PDF, Excel, Word und weitere Formate für umfassende Dokumentenanalyse.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🔍</div>
+                <h3>Intelligente RAG-Suche</h3>
+                <p>Retrieval Augmented Generation (RAG) findet automatisch die relevantesten Dokumentenabschnitte zu Ihrer Frage und liefert präzise, kontextbasierte Antworten.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🤖</div>
+                <h3>KI-Agent mit Kontextverständnis</h3>
+                <p>Der Agent analysiert alle verfügbaren Dokumente, stellt sicher, dass der komplette Kontext erfasst wird, und generiert strukturierte, umsetzbare Empfehlungen.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Process Section -->
+    <section class="process">
+        <div class="process-container">
+            <h2>So funktioniert der Business Analyst Agent</h2>
+
+            <div class="process-steps">
+                <div class="process-step">
+                    <div class="step-number">1</div>
+                    <h4>Dokumente hochladen</h4>
+                    <p>Laden Sie Ihre Business-Dokumente hoch. Der Agent unterstützt PDFs, Excel-Dateien, Word-Dokumente und weitere Formate.</p>
+                </div>
+
+                <div class="process-step">
+                    <div class="step-number">2</div>
+                    <h4>Automatische Einbettung</h4>
+                    <p>Die Dokumente werden automatisch in eine Vektordatenbank eingebettet und für die intelligente Suche optimiert.</p>
+                </div>
+
+                <div class="process-step">
+                    <div class="step-number">3</div>
+                    <h4>Frage stellen</h4>
+                    <p>Stellen Sie eine komplexe Business-Frage. Der Agent nutzt RAG, um die relevantesten Informationen zu finden.</p>
+                </div>
+
+                <div class="process-step">
+                    <div class="step-number">4</div>
+                    <h4>Kontextanalyse</h4>
+                    <p>Der KI-Agent analysiert alle relevanten Dokumentenabschnitte und stellt sicher, dass der komplette Kontext erfasst wird.</p>
+                </div>
+
+                <div class="process-step">
+                    <div class="step-number">5</div>
+                    <h4>Intelligente Antwort</h4>
+                    <p>Erhalten Sie eine präzise, strukturierte Antwort mit Quellenangaben und umsetzbaren Empfehlungen.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="cta-content">
+            <h2>Revolutionieren Sie Ihre Business-Analyse</h2>
+            <p>Nutzen Sie die Kraft von RAG und KI, um komplexe Dokumentenanalysen in Sekunden statt Stunden durchzuführen. Steigern Sie Ihre Produktivität als Business Analyst.</p>
+            <a href="/analyzer" class="cta-button">
+                <span>Business Analyst Agent starten</span>
+                <span>🚀</span>
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-brand">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/5/56/Deloitte.svg" alt="{{CORPORATE_NAME}}" class="footer-logo">
+            <span class="brand-text">Business Analyst Agent</span>
+        </div>
+        <p class="footer-text">© 2025 {{CORPORATE_NAME}}. KI-gestützter Business Analyst Agent für intelligente Dokumentenanalyse.</p>
+    </footer>
+
+    <script>
+        // Theme Management
+        const THEME_KEY = 'ba-tool-theme';
+        
+        function initTheme() {
+            const savedTheme = localStorage.getItem(THEME_KEY);
+            const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            const theme = savedTheme || systemTheme;
+            
+            document.documentElement.setAttribute('data-theme', theme);
+            updateThemeIcon(theme);
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            // Add switching class to prevent transitions during theme change
+            document.body.classList.add('theme-switching');
+            
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem(THEME_KEY, newTheme);
+            updateThemeIcon(newTheme);
+            
+            // Remove switching class after a brief delay
+            setTimeout(() => {
+                document.body.classList.remove('theme-switching');
+            }, 50);
+        }
+
+        function updateThemeIcon(theme) {
+            const sunIcon = document.querySelector('.theme-icon.sun');
+            const moonIcon = document.querySelector('.theme-icon.moon');
+            
+            if (theme === 'dark') {
+                sunIcon.style.opacity = '0';
+                moonIcon.style.opacity = '1';
+            } else {
+                sunIcon.style.opacity = '1';
+                moonIcon.style.opacity = '0';
+            }
+        }
+
+        // Listen for system theme changes
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+            if (!localStorage.getItem(THEME_KEY)) {
+                const theme = e.matches ? 'dark' : 'light';
+                document.documentElement.setAttribute('data-theme', theme);
+                updateThemeIcon(theme);
+            }
+        }); 
+
+        // Enhanced animations and interactions
+        function initAnimations() {
+            // Intersection Observer for scroll animations
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+
+            // Observe elements for animation
+            document.querySelectorAll('.feature-card, .process-step').forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(el);
+            });
+        }
+
+        // Keyboard navigation support
+        function initKeyboardSupport() {
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Tab') {
+                    document.body.classList.add('keyboard-nav');
+                }
+                
+                // Theme toggle with keyboard shortcut (Alt + T)
+                if (e.altKey && e.key === 't') {
+                    e.preventDefault();
+                    toggleTheme();
+                }
+            });
+
+            document.addEventListener('mousedown', () => {
+                document.body.classList.remove('keyboard-nav');
+            });
+        }
+
+        // Initialize everything
+        document.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+            initAnimations();
+            initKeyboardSupport();
+            
+            console.log('🎨 Enhanced Mobile-Responsive Landing Page initialized');
+        });
+    </script>
+</body>
+</html>

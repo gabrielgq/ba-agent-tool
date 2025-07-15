@@ -1,0 +1,34 @@
+QUICK START GUIDE - Business Analysis Tool
+5-Minute Setup
+1. Install Everything (copy-paste this entire command):
+pip install fastapi uvicorn python-multipart langchain langchain-community faiss-cpu sentence-transformers pypdf unstructured openpyxl pandas numpy aiofiles httpx
+2. Install Ollama:
+	•	Go to https://ollama.com/ and download
+	•	After installing, run these commands:
+ollama pull llama3
+ollama serve
+(Keep this terminal window open)
+3. Save the HTML:
+	•	Create a new file called index.html in your project folder
+	•	Copy the HTML code I provided into this file
+	•	Save it
+4. Run the Application:
+python main.py
+5. Open Your Browser:
+Go to: http://localhost:8000
+That's it! The app will automatically match your computer's dark/light mode.
+Quick Feature Test:
+	1	Test Upload: Go to RAG/CAG page → Upload any text file
+	2	Test Chat: Ask "What's in my documents?"
+	3	Test SQL: Go to Analytics → Type "Show all customers" → Generate SQL
+If Something Doesn't Work:
+	1	"Module not found": Run the pip install command again
+	2	"Ollama error": Make sure ollama serve is running
+	3	"Cannot connect": Check if python main.py is running
+	4	Page not loading: Make sure index.html is in the same folder as main.py
+File Locations:
+Your-Project-Folder/
+├── index.html    ← The new UI goes here
+├── main.py       ← Run this file
+└── (other files...)
+Remember: You're running the web version now, not the old Streamlit version!
