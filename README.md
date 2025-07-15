@@ -5,8 +5,9 @@
 This is a professional AI-powered Business Intelligence Platform designed for regulatory mapping error analysis. The tool helps business analysts identify and resolve data mapping issues using advanced language models with contextual document analysis.
 
 ### ✨ Key Features
+
 - **AI-Powered Analysis**: Multiple LLM models (Llama 3, Mistral, Gemma 2, CodeLlama)
-- **Document Context**: RAG (Regulatory Guidelines) & CAG (Company Procedures) 
+- **Document Context**: RAG (Regulatory Guidelines) & CAG (Company Procedures)
 - **SQL Analytics**: Natural language to SQL conversion with database analysis
 - **Corporate Branding**: Fully customizable enterprise interface
 - **Dark/Light Mode**: Professional UI with theme switching
@@ -17,12 +18,14 @@ This is a professional AI-powered Business Intelligence Platform designed for re
 ## 🚀 Quick Start (Automated Installation)
 
 ### Option 1: One-Click Setup Script
+
 ```bash
 # Download and run the automated installer
 python install_and_run.py
 ```
 
 ### Option 2: Corporate Setup Script (Recommended for Enterprise)
+
 ```bash
 # Make the setup script executable
 chmod +x setup_corporate_env.sh
@@ -38,12 +41,14 @@ chmod +x setup_corporate_env.sh
 ### Step 1: System Requirements
 
 **Minimum Requirements:**
+
 - **Python**: 3.8 or higher
 - **RAM**: 8GB minimum (16GB recommended)
 - **Storage**: 10GB free space
 - **OS**: Windows 10/11, macOS 10.15+, or Linux
 
 **Check Python Version:**
+
 ```bash
 python3 --version
 # Should show Python 3.8.x or higher
@@ -54,11 +59,13 @@ python3 --version
 Ollama is required to run the AI models locally.
 
 **🐧 Linux:**
+
 ```bash
 curl -fsSL https://ollama.com/install.sh | sh
 ```
 
 **🍎 macOS:**
+
 ```bash
 # Using Homebrew
 brew install ollama
@@ -67,12 +74,14 @@ brew install ollama
 ```
 
 **🪟 Windows:**
+
 ```bash
 # Download installer from https://ollama.com
 # Run the installer and follow instructions
 ```
 
 **Start Ollama Service:**
+
 ```bash
 ollama serve
 ```
@@ -93,6 +102,7 @@ ollama pull llama3.1    # Advanced reasoning (8.0GB)
 ```
 
 **Verify models are installed:**
+
 ```bash
 ollama list
 ```
@@ -100,6 +110,7 @@ ollama list
 ### Step 4: Install Python Dependencies
 
 **Create Virtual Environment (Recommended):**
+
 ```bash
 # Create virtual environment
 python3 -m venv venv
@@ -112,6 +123,7 @@ venv\Scripts\activate
 ```
 
 **Install Required Packages:**
+
 ```bash
 # Install all dependencies
 pip install fastapi uvicorn python-multipart python-dotenv
@@ -127,6 +139,7 @@ pip install -r requirements.txt
 ### Step 5: Project Setup
 
 **Create Directory Structure:**
+
 ```bash
 # Create required directories
 mkdir -p rag_docs cag_docs mapping_docs static
@@ -135,6 +148,7 @@ mkdir -p logs backups
 ```
 
 **Create Environment Configuration (.env file):**
+
 ```bash
 # Create .env file with corporate settings
 cat > .env << EOF
@@ -168,6 +182,7 @@ EOF
 ### Start the Application
 
 **Method 1: Direct Python**
+
 ```bash
 # Ensure Ollama is running in another terminal
 ollama serve
@@ -177,6 +192,7 @@ python main.py
 ```
 
 **Method 2: Using the Startup Script**
+
 ```bash
 # If you used the corporate setup
 ./start_corporate_analyzer.sh
@@ -187,7 +203,7 @@ python main.py
 Once started, you can access:
 
 - **🏠 Landing Page**: http://localhost:8000
-- **📊 Main Analyzer**: http://localhost:8000/analyzer  
+- **📊 Main Analyzer**: http://localhost:8000/analyzer
 - **📚 API Documentation**: http://localhost:8000/docs
 - **🔧 Health Check**: http://localhost:8000/api/health
 
@@ -209,7 +225,7 @@ business-intelligence-platform/
 │       └── data_analytics.py     # SQL analytics
 ├── 📚 Document Storage
 │   ├── rag_docs/                # Regulatory guidelines
-│   ├── cag_docs/                # Company procedures  
+│   ├── cag_docs/                # Company procedures
 │   ├── mapping_docs/            # Technical mappings
 │   ├── rag_docs_vectorstore/    # AI vector database
 │   └── cag_docs_vectorstore/    # AI vector database
@@ -228,28 +244,33 @@ business-intelligence-platform/
 ## 🎯 How to Use the Platform
 
 ### 1. Upload Documents
+
 - **RAG Documents**: Upload regulatory guidelines, compliance documents
 - **CAG Documents**: Upload company procedures, internal guidelines
 - **Supported formats**: PDF, TXT, MD, CSV, XLSX, DOCX
 
 ### 2. Select AI Model
+
 - **Llama 3**: Balanced analysis for general use
 - **Mistral**: Fast error detection and analysis
 - **Gemma 2**: Structured data validation specialist
 - **CodeLlama**: Technical transformation analysis
 
 ### 3. Configure Context
+
 - **RAG + CAG**: Full contextual analysis (recommended)
 - **RAG Only**: Regulatory focus
 - **CAG Only**: Company procedure focus
 - **No Context**: Direct AI analysis
 
 ### 4. Run Analysis
+
 - Describe your mapping problem in natural language
 - Get detailed analysis with actionable recommendations
 - Export results for documentation
 
 ### 5. SQL Analytics (Bonus Feature)
+
 - Upload SQLite databases
 - Ask questions in natural language
 - Get generated SQL queries and results
@@ -261,6 +282,7 @@ business-intelligence-platform/
 ### Customize Your Platform
 
 **Update Logo:**
+
 ```bash
 # Replace with your corporate logo
 cp your-company-logo.svg static/your-logo.svg
@@ -268,12 +290,14 @@ cp your-company-logo.svg static/your-logo.svg
 
 **Update Colors:**
 Edit the `.env` file:
+
 ```bash
 CORPORATE_PRIMARY_COLOR="#YOUR_HEX_COLOR"
 CORPORATE_SECONDARY_COLOR="#YOUR_HEX_COLOR"
 ```
 
 **Update Organization Info:**
+
 ```bash
 CORPORATE_APP_NAME="Your Platform Name"
 CORPORATE_ORGANIZATION="Your Company Name"
@@ -287,6 +311,7 @@ CORPORATE_SUPPORT_EMAIL="support@yourcompany.com"
 ### Common Issues and Solutions
 
 **❌ "Ollama not found" Error**
+
 ```bash
 # Check if Ollama is installed
 ollama --version
@@ -297,6 +322,7 @@ ollama serve
 ```
 
 **❌ "Model not available" Error**
+
 ```bash
 # Check available models
 ollama list
@@ -307,6 +333,7 @@ ollama pull mistral
 ```
 
 **❌ "Port already in use" Error**
+
 ```bash
 # Check what's using port 8000
 lsof -i :8000
@@ -316,6 +343,7 @@ APP_PORT=8001
 ```
 
 **❌ Python Import Errors**
+
 ```bash
 # Reinstall dependencies
 pip install --upgrade -r requirements.txt
@@ -325,6 +353,7 @@ which python  # Should show venv path
 ```
 
 **❌ Vector Database Issues**
+
 ```bash
 # Clear and rebuild vector databases
 rm -rf rag_docs_vectorstore cag_docs_vectorstore
@@ -336,8 +365,9 @@ python main.py
 ### Log Files
 
 Check these files for detailed error information:
+
 - `analyzer.log` - Application logs
-- `logs/startup.log` - Startup logs  
+- `logs/startup.log` - Startup logs
 - `logs/ollama.log` - AI model logs
 
 ---
@@ -345,6 +375,7 @@ Check these files for detailed error information:
 ## 📊 System Monitoring
 
 ### Health Check
+
 ```bash
 # Check system status
 curl http://localhost:8000/api/health
@@ -356,11 +387,13 @@ curl http://localhost:8000/api/corporate/config
 ### Performance Optimization
 
 **For Better Performance:**
+
 - Use SSD storage for faster document processing
 - Allocate more RAM to improve AI model performance
 - Use GPU-enabled Ollama for faster inference (if available)
 
 **Memory Usage:**
+
 - Each AI model uses 4-8GB RAM
 - Vector databases use 100-500MB per 1000 documents
 - Keep 2-4GB free for document processing
@@ -372,16 +405,19 @@ curl http://localhost:8000/api/corporate/config
 ### Enterprise Considerations
 
 **Audit Logging:**
+
 - All analysis activities are logged
 - User actions are tracked for compliance
 - Logs available at `/api/audit/logs`
 
 **Data Privacy:**
+
 - All processing happens locally
 - No data sent to external APIs
 - Documents stored locally only
 
 **Network Security:**
+
 - Application runs on localhost by default
 - Configure firewall rules for network access
 - Use HTTPS in production environments
@@ -393,10 +429,12 @@ curl http://localhost:8000/api/corporate/config
 ### Getting Help
 
 **Documentation:**
+
 - API Documentation: http://localhost:8000/docs
 - Interactive API testing available in browser
 
 **Common Commands:**
+
 ```bash
 # Check system status
 python -c "import fastapi, ollama, langchain; print('✅ All packages installed')"
@@ -412,6 +450,7 @@ python main.py
 ```
 
 **Community Resources:**
+
 - [Ollama Documentation](https://ollama.com/docs)
 - [LangChain Documentation](https://docs.langchain.com)
 - [FastAPI Documentation](https://fastapi.tiangolo.com)
@@ -430,7 +469,7 @@ python main.py
 ### Feature Extensions
 
 1. **Additional Models**: Add specialized models for your industry
-2. **Custom Templates**: Create analysis templates for common scenarios  
+2. **Custom Templates**: Create analysis templates for common scenarios
 3. **Reporting**: Build automated reporting dashboards
 4. **Integration**: Connect to existing BI tools and databases
 
