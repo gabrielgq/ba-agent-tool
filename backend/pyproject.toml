@@ -17,7 +17,6 @@ dependencies = [
     "pandas>=2.3.1",
     "pypdf>=5.8.0",
     "python-multipart>=0.0.20",
-    "sentence-transformers>=5.0.0",
     "streamlit>=1.47.0",
     "unstructured>=0.18.9",
     "uvicorn>=0.35.0",
