@@ -1,0 +1,2419 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Analyst Agent - AI-Powered Analysis</title>
+    <style>
+        /* Base Styles and Color Palette */
+        :root {
+            --brand-primary: #86bc25;
+            --brand-secondary: #0d2818;
+            --transition: all 0.3s ease;
+            --border-radius: 0.75rem;
+            --border-radius-lg: 1rem;
+        }
+        /* Light Theme */
+        [data-theme="light"] {
+            --bg-primary: #f8f9fa;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #e9ecef;
+            --text-primary: #1a1a1a;
+            --text-secondary: #6c757d;
+            --border-color: #dee2e6;
+            --border-hover: #ced4da;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+            --brand-accent: rgba(134, 188, 37, 0.1);
+            --brand-accent-hover: rgba(134, 188, 37, 0.15);
+            --input-bg: #ffffff;
+            --input-border: #ced4da;
+            --input-focus: var(--brand-primary);
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --info-color: #17a2b8;
+            --accent-error: #dc3545;
+        }
+        /* Dark Theme */
+        [data-theme="dark"] {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #21262d;
+            --text-primary: #f0f6fc;
+            --text-secondary: #8b949e;
+            --border-color: #30363d;
+            --border-hover: #40464e;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.2);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -4px rgba(0, 0, 0, 0.4);
+            --brand-accent: rgba(134, 188, 37, 0.1);
+            --brand-accent-hover: rgba(134, 188, 37, 0.15);
+            --input-bg: #21262d;
+            --input-border: #30363d;
+            --input-focus: var(--brand-primary);
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --info-color: #17a2b8;
+            --accent-error: #dc3545;
+        }
+        /* General Styles */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        html, body { height: 100%; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        
+        .hidden { display: none !important; }
+        .main-wrapper { flex: 1; display: flex; flex-direction: column; }
+        /* Components */
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 1rem; }
+        .card {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+            transition: var(--transition);
+            margin-bottom: 1.5rem;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+        .btn-primary { background-color: var(--brand-primary); color: white; }
+        .btn-primary:hover { background-color: #6fa020; transform: translateY(-2px); }
+        .btn-secondary { background-color: var(--bg-tertiary); color: var(--text-primary); }
+        .btn-secondary:hover { background-color: var(--border-hover); }
+        .btn-success { background-color: var(--success-color); color: white; }
+        .btn-success:hover { background-color: #218838; }
+        .btn-danger { background-color: var(--danger-color); color: white; }
+        .btn-danger:hover { background-color: #c82333; }
+        .btn-small { padding: 0.5rem 1rem; font-size: 0.8rem; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        /* Header */
+        .header {
+            background-color: var(--brand-secondary);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: var(--shadow-lg);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .header-title { flex: 1; min-width: 0; }
+        .header-title h1 { font-size: 1.5rem; font-weight: 700; margin: 0; }
+        .header-title p { font-size: 0.9rem; opacity: 0.9; margin: 0; }
+        .header-controls { display: flex; align-items: center; gap: 1rem; }
+        .logo-box {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            padding: 0.75rem 1rem;
+            border-radius: var(--border-radius);
+            display: flex;
+            align-items: center;
+            flex-shrink: 0;
+        }
+        .brand-logo { height: 2.5rem; width: auto; filter: brightness(0) invert(1); transition: var(--transition); }
+        .theme-toggle {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 0.75rem;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            color: white;
+        }
+        .theme-toggle:hover { background-color: rgba(255, 255, 255, 0.2); transform: scale(1.1); }
+        .theme-toggle svg { width: 1.25rem; height: 1.25rem; stroke: currentColor; }
+        /* Main Content */
+        .main-content { padding: 1.5rem 0; display: grid; gap: 1.5rem; flex: 1; }
+        /* API Configuration */
+        .api-config {
+            background: linear-gradient(135deg, var(--brand-accent), var(--brand-accent-hover));
+            border: 1px solid var(--brand-primary);
+            border-radius: var(--border-radius-lg);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .api-config h3 {
+            color: var(--brand-primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+        }
+        .api-inputs { display: flex; flex-direction: column; gap: 1rem; }
+        .api-input {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--input-border);
+            background-color: var(--input-bg);
+            color: var(--text-primary);
+            font-size: 16px;
+            transition: var(--transition);
+        }
+        .api-input:focus {
+            outline: none;
+            border-color: var(--brand-primary);
+            box-shadow: 0 0 0 3px var(--brand-accent);
+        }
+        .api-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+        }
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--danger-color);
+            flex-shrink: 0;
+        }
+        .status-indicator.connected { background-color: var(--success-color); }
+        /* Upload Area */
+        .upload-area {
+            border: 2px dashed var(--border-color);
+            border-radius: var(--border-radius-lg);
+            padding: 1.5rem;
+            text-align: center;
+            transition: var(--transition);
+            position: relative;
+            touch-action: manipulation;
+        }
+        .upload-area.dragging {
+            border-color: var(--brand-primary);
+            background-color: var(--brand-accent);
+            transform: scale(1.02);
+        }
+        .upload-area h3 { margin: 1rem 0 0.5rem; font-size: 1.1rem; }
+        .upload-area p { color: var(--text-secondary); margin-bottom: 1rem; font-size: 0.9rem; }
+        .upload-icon {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 3rem;
+            height: 3rem;
+            margin: 0 auto;
+            background-color: var(--brand-primary);
+            color: white;
+            border-radius: var(--border-radius);
+        }
+        .upload-icon svg { width: 1.5rem; height: 1.5rem; }
+        /* Processing Status */
+        .processing-status {
+            display: none;
+            background: var(--brand-accent);
+            border: 1px solid var(--brand-primary);
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            margin-top: 1rem;
+            text-align: center;
+        }
+        .processing-status.active { display: block; }
+        .processing-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid var(--brand-primary);
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s linear infinite;
+            margin-right: 0.5rem;
+        }
+        .progress-container {
+            width: 100%;
+            background-color: var(--bg-tertiary);
+            border-radius: var(--border-radius);
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 6px;
+            background: linear-gradient(90deg, var(--brand-primary), #6fa020);
+            border-radius: var(--border-radius);
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+        .progress-text {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        /* Tabs */
+        .tabs-nav {
+            display: flex;
+            border-bottom: 2px solid var(--border-color);
+            margin-bottom: 1.5rem;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            background: var(--bg-secondary);
+            border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
+            padding: 0.5rem 0.5rem 0;
+        }
+        .tab-btn {
+            padding: 0.875rem 1.5rem;
+            cursor: pointer;
+            border: none;
+            background: none;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 600;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            white-space: nowrap;
+            flex-shrink: 0;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+        }
+        .tab-btn:hover { color: var(--text-primary); background: var(--brand-accent); }
+        .tab-btn.active {
+            color: var(--brand-primary);
+            border-bottom-color: var(--brand-primary);
+            background: var(--bg-primary);
+            font-weight: 700;
+        }
+        .tab-btn svg { width: 1rem; height: 1rem; transition: var(--transition); }
+        .doc-count-badge {
+            background: var(--brand-primary);
+            color: white;
+            padding: 0.125rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            min-width: 1.5rem;
+            text-align: center;
+            margin-left: 0.25rem;
+        }
+        .tab-content-pane {
+            background: var(--bg-primary);
+            border-radius: 0 0 var(--border-radius-lg) var(--border-radius-lg);
+            padding: 1.5rem;
+            min-height: 300px;
+            border: 1px solid var(--border-color);
+            border-top: none;
+        }
+        /* List Items */
+        .list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.25rem;
+            border-radius: var(--border-radius-lg);
+            border: 1px solid var(--border-color);
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+            margin-bottom: 1rem;
+            transition: var(--transition);
+        }
+        .list-item:hover { 
+            border-color: var(--brand-primary); 
+            transform: translateY(-2px);
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--brand-accent) 100%);
+        }
+        .list-item-content { display: flex; align-items: center; gap: 1rem; flex: 1; min-width: 0; }
+        .list-item-icon { 
+            color: var(--brand-primary); 
+            flex-shrink: 0;
+            width: 2.5rem;
+            height: 2.5rem;
+            background: var(--brand-accent);
+            border-radius: var(--border-radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+        .list-item:hover .list-item-icon {
+            background: var(--brand-primary);
+            color: white;
+            transform: scale(1.1);
+        }
+        .list-item-details { flex: 1; min-width: 0; }
+        .list-item-details .name { 
+            font-weight: 600; 
+            font-size: 1rem;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+            word-break: break-word;
+        }
+        .list-item-details .meta { 
+            font-size: 0.85rem; 
+            color: var(--text-secondary); 
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            align-items: center;
+        }
+        .meta-badge {
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            padding: 0.125rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+        .meta-badge.processed { background: var(--success-color); color: white; }
+        .meta-badge.stored { background: var(--brand-primary); color: white; }
+        .meta-badge.warning { background: var(--warning-color); color: #212529; }
+        .meta-badge.error { background: var(--danger-color); color: white; }
+        .list-item-actions { display: flex; gap: 0.5rem; flex-shrink: 0; }
+        .delete-btn, .download-btn {
+            background: var(--bg-tertiary); 
+            border: 1px solid var(--border-color); 
+            cursor: pointer; 
+            color: var(--text-secondary);
+            padding: 0.5rem;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 2.25rem;
+            height: 2.25rem;
+        }
+        .delete-btn:hover { color: white; background: var(--danger-color); border-color: var(--danger-color); }
+        .download-btn:hover { color: white; background: var(--brand-primary); border-color: var(--brand-primary); }
+        /* Empty State */
+        .empty-state { 
+            text-align: center; 
+            padding: 3rem 1.5rem; 
+            color: var(--text-secondary);
+            background: var(--bg-secondary);
+            border-radius: var(--border-radius-lg);
+            border: 2px dashed var(--border-color);
+            margin: 1rem 0;
+        }
+        .empty-state svg { width: 4rem; height: 4rem; opacity: 0.3; margin-bottom: 1rem; color: var(--text-secondary); }
+        .empty-state h3 { font-size: 1.1rem; margin-bottom: 0.5rem; color: var(--text-primary); }
+        .empty-state p { font-size: 0.9rem; max-width: 300px; margin: 0 auto; line-height: 1.6; }
+        /* Embedding Monitor Specific Styles */
+        .monitor-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .monitor-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            padding: 1rem;
+        }
+        
+        .monitor-card h4 {
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--brand-primary);
+            margin-bottom: 0.25rem;
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        
+        .quality-bar {
+            background: var(--bg-tertiary);
+            border-radius: var(--border-radius);
+            height: 8px;
+            margin: 0.5rem 0;
+            overflow: hidden;
+        }
+        
+        .quality-fill {
+            height: 100%;
+            border-radius: var(--border-radius);
+            transition: width 0.3s ease;
+        }
+        
+        .quality-fill.excellent { background: var(--success-color); }
+        .quality-fill.good { background: var(--brand-primary); }
+        .quality-fill.fair { background: var(--warning-color); }
+        .quality-fill.poor { background: var(--danger-color); }
+        
+        .chunk-list {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            background: var(--bg-secondary);
+        }
+        
+        .chunk-item {
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+        }
+        
+        .chunk-item:last-child {
+            border-bottom: none;
+        }
+        
+        .chunk-info {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .chunk-text {
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .chunk-meta {
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+        }
+        
+        .chunk-status {
+            flex-shrink: 0;
+            margin-left: 1rem;
+        }
+        
+        .process-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem;
+            background: var(--brand-accent);
+            border: 1px solid var(--brand-primary);
+            border-radius: var(--border-radius);
+            margin-bottom: 1rem;
+        }
+        
+        .process-indicator.active {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .embedding-sample {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 0.8rem;
+        }
+        
+        .embedding-preview {
+            display: flex;
+            gap: 0.25rem;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+        }
+        
+        .embedding-value {
+            background: var(--brand-primary);
+            color: white;
+            padding: 0.125rem 0.25rem;
+            border-radius: 2px;
+            font-size: 0.7rem;
+            font-family: monospace;
+        }
+        
+        .search-results-section {
+            border-top: 1px solid var(--border-color);
+            padding-top: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .search-result-item {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .similarity-score {
+            font-weight: 600;
+            color: var(--brand-primary);
+        }
+        /* Chat Interface */
+        .chat-container { height: 60vh; min-height: 400px; display: flex; flex-direction: column; }
+        .chat-header {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 600;
+            display: flex; 
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .chat-header-left { display: flex; align-items: center; gap: 0.5rem; flex: 1; min-width: 0; }
+        .chat-header-left span { font-size: 0.9rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .chat-header svg { color: var(--brand-primary); }
+        .chat-messages { flex-grow: 1; overflow-y: auto; padding: 1rem; -webkit-overflow-scrolling: touch; }
+        .message { display: flex; max-width: 90%; margin-bottom: 1rem; }
+        .message.user { justify-content: flex-end; margin-left: auto; }
+        .message.assistant { justify-content: flex-start; margin-right: auto; }
+        .message-content {
+            padding: 0.75rem 1rem;
+            border-radius: var(--border-radius);
+            line-height: 1.5;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+        .message.user .message-content {
+            background-color: var(--brand-primary);
+            color: white;
+            border-bottom-right-radius: 0.25rem;
+        }
+        .message.assistant .message-content {
+            background-color: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            border-bottom-left-radius: 0.25rem;
+        }
+        .chat-input-area {
+            display: flex;
+            gap: 0.75rem;
+            padding: 1rem;
+            border-top: 1px solid var(--border-color);
+            align-items: flex-end;
+        }
+        .chat-input {
+            flex-grow: 1;
+            min-width: 0;
+            padding: 0.75rem;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--input-border);
+            background-color: var(--input-bg);
+            color: var(--text-primary);
+            font-size: 16px;
+            transition: var(--transition);
+            resize: none;
+            font-family: inherit;
+            min-height: 44px;
+        }
+        .chat-input:focus {
+            outline: none;
+            border-color: var(--input-focus);
+            box-shadow: 0 0 0 3px var(--brand-accent);
+        }
+        /* Template Section */
+        .template-section {
+            background-color: var(--bg-tertiary);
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+        .template-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .template-header h3 { margin: 0; font-size: 1rem; color: var(--text-primary); }
+        .template-selector-group { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1rem; }
+        .template-selector {
+            background-color: var(--input-bg);
+            border: 1px solid var(--input-border);
+            border-radius: var(--border-radius);
+            padding: 0.75rem;
+            color: var(--text-primary);
+            font-size: 16px;
+        }
+        .template-name-input {
+            padding: 0.75rem;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--input-border);
+            background-color: var(--input-bg);
+            color: var(--text-primary);
+            font-size: 16px;
+        }
+        .template-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+        .template-editor {
+            width: 100%;
+            min-height: 200px;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            background-color: var(--input-bg);
+            color: var(--text-primary);
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+            resize: vertical;
+            line-height: 1.5;
+        }
+        .template-variables {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+        .template-variable {
+            background-color: var(--brand-accent);
+            color: var(--brand-primary);
+            padding: 0.25rem 0.5rem;
+            border-radius: var(--border-radius);
+            font-size: 0.75rem;
+            font-family: monospace;
+            cursor: pointer;
+            transition: var(--transition);
+            user-select: none;
+        }
+        .template-variable:hover { background-color: var(--brand-accent-hover); transform: translateY(-1px); }
+        /* Feedback Messages */
+        .feedback-message {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            left: 1rem;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 500;
+            animation: slideIn 0.3s ease-out;
+            z-index: 2000;
+        }
+        .feedback-message.success { background-color: var(--success-color); color: white; }
+        .feedback-message.error { background-color: var(--danger-color); color: white; }
+        @keyframes slideIn { from { transform: translateY(-100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        /* Footer */
+        .footer {
+            background-color: var(--brand-secondary);
+            color: white;
+            padding: 1.5rem 0;
+            text-align: center;
+            margin-top: 2rem;
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .container { padding: 0 0.75rem; }
+            .card { padding: 1rem; margin-bottom: 1rem; }
+            .header { padding: 0.75rem 0; }
+            .header-content { flex-direction: column; gap: 0.75rem; text-align: center; }
+            .main-content { padding: 1rem 0; }
+            .chat-container { height: 50vh; min-height: 300px; }
+            .list-item { flex-direction: column; align-items: stretch; gap: 1rem; padding: 1rem; }
+            .list-item-actions { justify-content: center; width: 100%; gap: 1rem; padding-top: 0.5rem; border-top: 1px solid var(--border-color); }
+            .monitor-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body data-theme="light">
+    <div class="main-wrapper">
+        <header class="header">
+            <div class="container">
+                <div class="header-content">
+                    <div class="logo-box">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/5/56/Deloitte.svg" alt="Business Analyst" class="brand-logo">
+                    </div>
+                    <div class="header-title">
+                        <h1>Business Analyst Agent</h1>
+                        <p>Intelligente Dokumentenanalyse und KI-gestützte Einblicke</p>
+                    </div>
+                    <div class="header-controls">
+                        <button class="theme-toggle" id="theme-toggle" aria-label="Design umschalten">
+                            <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+                            <svg class="sun-icon hidden" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <main class="main-content">
+            <div class="container">
+                <!-- API Configuration -->
+                <div class="card">
+                    <div class="api-config">
+                        <h3>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                            Gemini AI Konfiguration
+                        </h3>
+                        <div class="api-inputs">
+                            <input type="password" id="gemini-api-key" class="api-input" placeholder="Geben Sie Ihren Gemini API-Schlüssel ein...">
+                            <div style="display: flex; gap: 0.5rem;">
+                                <button class="btn btn-primary" id="connect-gemini">Verbinden</button>
+                                <button class="btn btn-secondary" id="test-connection" disabled>Test Verbindung</button>
+                            </div>
+                        </div>
+                        <div class="api-status" id="api-status">
+                            <div class="status-indicator" id="status-indicator"></div>
+                            <span id="status-text">Nicht verbunden</span>
+                        </div>
+                        <div style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-secondary);">
+                            Benötigen Sie einen API-Schlüssel? Besuchen Sie 
+                            <a href="https://makersuite.google.com/app/apikey" target="_blank" style="color: var(--brand-primary);">Google AI Studio</a> 
+                            um einen kostenlosen Schlüssel zu erhalten.
+                        </div>
+                    </div>
+                </div>
+                <!-- Document Upload -->
+                <div class="card">
+                    <div class="upload-area" id="upload-area">
+                        <div class="upload-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M12 12v9"/><path d="m16 16-4-4-4 4"/></svg>
+                        </div>
+                        <h3>Dokumente hochladen</h3>
+                        <p>Ziehen Sie Dateien hierher oder klicken Sie, um sie auszuwählen</p>
+                        <input type="file" id="files-input" multiple class="hidden" accept=".txt,.pdf,.md,.csv,.xlsx,.docx,.json">
+                        <button class="btn btn-secondary" id="file-select-btn">Dateien auswählen</button>
+                        <div id="file-summary"></div>
+                        
+                        <div class="processing-status" id="processing-status">
+                            <div class="processing-spinner"></div>
+                            <span id="processing-text">Dokumente werden verarbeitet...</span>
+                            <div class="progress-container">
+                                <div class="progress-bar" id="progress-bar"></div>
+                            </div>
+                            <div class="progress-text" id="progress-text">0 von 0 Chunks verarbeitet</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Tabs for Documents, History, and Embeddings -->
+                <div class="card">
+                    <nav class="tabs-nav">
+                        <button class="tab-btn active" data-tab="documents">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
+                            <span>Dokumente</span>
+                            <span class="doc-count-badge" id="doc-count">0</span>
+                        </button>
+                        <button class="tab-btn" data-tab="history">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                            <span>Aktivitätsverlauf</span>
+                        </button>
+                        <button class="tab-btn" data-tab="embeddings">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2Z"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M8 11h8"/><path d="M8 15h4"/></svg>
+                            <span>Embedding Monitor</span>
+                            <span class="doc-count-badge" id="embedding-count">0</span>
+                        </button>
+                    </nav>
+                    <div class="tabs-content">
+                        <!-- Documents Tab -->
+                        <div class="tab-content-pane" id="documents-tab">
+                            <div id="doc-list"></div>
+                            <div class="empty-state" id="doc-empty-state">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
+                                <h3>Keine Dokumente</h3>
+                                <p>Hier erscheinen Ihre hochgeladenen Dokumente. Laden Sie Dateien hoch, um mit der Analyse zu beginnen.</p>
+                            </div>
+                        </div>
+                        <!-- History Tab -->
+                        <div class="tab-content-pane hidden" id="history-tab">
+                            <div id="history-list"></div>
+                            <div class="empty-state" id="history-empty-state">
+                               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                               <h3>Keine Aktivitäten</h3>
+                               <p>Hier erscheint der Verlauf Ihrer Aktivitäten und Analysen.</p>
+                            </div>
+                        </div>
+                        <!-- Embeddings Tab -->
+                        <div class="tab-content-pane hidden" id="embeddings-tab">
+                            <!-- Real-time Process Indicator -->
+                            <div id="current-process" class="process-indicator hidden">
+                                <div class="processing-spinner"></div>
+                                <div>
+                                    <div id="process-title" style="font-weight: 600; margin-bottom: 0.25rem;">Verarbeite Dokument...</div>
+                                    <div id="process-details" style="font-size: 0.8rem; color: var(--text-secondary);">Vorbereitung...</div>
+                                </div>
+                            </div>
+                            <!-- Overview Statistics -->
+                            <div class="monitor-grid">
+                                <div class="monitor-card">
+                                    <h4>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/></svg>
+                                        Verarbeitete Dokumente
+                                    </h4>
+                                    <div class="stat-value" id="total-documents">0</div>
+                                    <div class="stat-label">Dokumente gespeichert</div>
+                                </div>
+                                
+                                <div class="monitor-card">
+                                    <h4>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2Z"/></svg>
+                                        Embedding Chunks
+                                    </h4>
+                                    <div class="stat-value" id="total-chunks">0</div>
+                                    <div class="stat-label">Chunks erstellt</div>
+                                </div>
+                                
+                                <div class="monitor-card">
+                                    <h4>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                                        Durchschn. Chunk-Größe
+                                    </h4>
+                                    <div class="stat-value" id="avg-chunk-size">0</div>
+                                    <div class="stat-label">Zeichen pro Chunk</div>
+                                </div>
+                                
+                                <div class="monitor-card">
+                                    <h4>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><path d="M21 12c-1 0-3-1-3-3s2-3 3-3 3 1 3 3-2 3-3 3"/><path d="M3 12c1 0 3-1 3-3s-2-3-3-3-3 1-3 3 2 3 3 3"/><path d="M13 12h3"/></svg>
+                                        Qualitätsbewertung
+                                    </h4>
+                                    <div class="stat-value" id="quality-score">N/A</div>
+                                    <div class="stat-label">Embedding-Qualität</div>
+                                    <div class="quality-bar">
+                                        <div class="quality-fill" id="quality-fill" style="width: 0%;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Document List with Embedding Status -->
+                            <div class="monitor-card" style="margin-bottom: 1rem;">
+                                <h4>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/></svg>
+                                    Dokument-Embeddings
+                                </h4>
+                                <div id="embedding-list" class="chunk-list">
+                                    <div style="padding: 2rem; text-align: center; color: var(--text-secondary);">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.3; margin-bottom: 1rem;"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/></svg>
+                                        <p>Keine Embeddings verfügbar</p>
+                                        <p style="font-size: 0.8rem; margin-top: 0.5rem;">Laden Sie Dokumente hoch, um Embeddings zu erstellen</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Quality Analysis -->
+                            <div class="monitor-card" style="margin-bottom: 1rem;">
+                                <h4>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                                    Qualitätsanalyse
+                                </h4>
+                                <div id="quality-analysis">
+                                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-top: 1rem;">
+                                        <div style="text-align: center;">
+                                            <div style="font-size: 1.2rem; font-weight: 600; color: var(--success-color);" id="optimal-chunks">0%</div>
+                                            <div style="font-size: 0.8rem; color: var(--text-secondary);">Optimal (500-1500 Zeichen)</div>
+                                        </div>
+                                        <div style="text-align: center;">
+                                            <div style="font-size: 1.2rem; font-weight: 600; color: var(--warning-color);" id="acceptable-chunks">0%</div>
+                                            <div style="font-size: 0.8rem; color: var(--text-secondary);">Akzeptabel (300-500, 1500-2000)</div>
+                                        </div>
+                                        <div style="text-align: center;">
+                                            <div style="font-size: 1.2rem; font-weight: 600; color: var(--danger-color);" id="poor-chunks">0%</div>
+                                            <div style="font-size: 0.8rem; color: var(--text-secondary);">Schlecht (<300, >2000)</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Sample Embeddings and Search Results -->
+                            <div class="monitor-card">
+                                <h4>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                                    Sample Embeddings & Such-Ergebnisse
+                                </h4>
+                                <div id="sample-embeddings">
+                                    <div style="padding: 2rem; text-align: center; color: var(--text-secondary);">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.3; margin-bottom: 1rem;"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                                        <p>Keine Sample-Embeddings verfügbar</p>
+                                        <p style="font-size: 0.8rem; margin-top: 0.5rem;">Erstellen Sie Embeddings um Samples anzuzeigen</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Chat Interface -->
+                <div class="card chat-container">
+                    <div class="chat-header">
+                        <div class="chat-header-left">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 9h8"/><path d="M8 13h6"/><path d="M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3h-5l-5 3v-3H6a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3h12z"/></svg>
+                            <span>KI-Assistent für Dokumentenanalyse</span>
+                        </div>
+                        <button class="btn btn-small btn-secondary" id="show-template-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                            Vorlagen
+                        </button>
+                    </div>
+                    <div class="chat-messages" id="chat-messages">
+                        <div class="message assistant">
+                            <div class="message-content">
+                               Willkommen! Verbinden Sie sich mit Gemini AI, laden Sie Ihre Dokumente hoch und stellen Sie Ihre Fragen. Ich helfe Ihnen bei der Analyse und strukturierten Auswertung.
+                            </div>
+                        </div>
+                    </div>
+                    <div id="template-area" class="hidden" style="padding: 1rem; border-top: 1px solid var(--border-color);">
+                        <div class="template-section">
+                            <div class="template-header">
+                                <h3>Antwortvorlagen</h3>
+                            </div>
+                            <div class="template-selector-group">
+                                <select class="template-selector" id="template-selector">
+                                    <option value="">-- Neue Vorlage erstellen --</option>
+                                </select>
+                                <input type="text" id="template-name-input" class="template-name-input" placeholder="Vorlagenname eingeben...">
+                            </div>
+                            <div class="template-actions">
+                                <button class="btn btn-small btn-success" id="save-template-btn">Speichern</button>
+                                <button class="btn btn-small btn-danger" id="delete-template-btn" disabled>Löschen</button>
+                                <button class="btn btn-small btn-primary" id="use-template-btn">Verwenden</button>
+                            </div>
+                            <textarea class="template-editor" id="template-editor" placeholder="Erstellen Sie hier Ihre Antwortvorlage...">## ANALYSEERGEBNIS
+**Analysierte Dokumente:**
+{DOKUMENTE}
+**Zusammenfassung:**
+{ZUSAMMENFASSUNG}
+**Identifizierte Probleme:**
+{PROBLEME}
+**Empfohlene Maßnahmen:**
+{EMPFEHLUNGEN}
+**Compliance-Status:**
+{COMPLIANCE}
+**Nächste Schritte:**
+{NÄCHSTE_SCHRITTE}</textarea>
+                            <div class="template-variables">
+                                <div class="template-variable" data-var="{DOKUMENTE}">{DOKUMENTE}</div>
+                                <div class="template-variable" data-var="{ZUSAMMENFASSUNG}">{ZUSAMMENFASSUNG}</div>
+                                <div class="template-variable" data-var="{PROBLEME}">{PROBLEME}</div>
+                                <div class="template-variable" data-var="{EMPFEHLUNGEN}">{EMPFEHLUNGEN}</div>
+                                <div class="template-variable" data-var="{COMPLIANCE}">{COMPLIANCE}</div>
+                                <div class="template-variable" data-var="{NÄCHSTE_SCHRITTE}">{NÄCHSTE_SCHRITTE}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chat-input-area">
+                        <textarea id="chat-input" class="chat-input" rows="2" placeholder="Stellen Sie eine Frage zu Ihren Dokumenten... (Enter zum Senden, Shift+Enter für neue Zeile)"></textarea>
+                        <button class="btn btn-primary" id="send-button">
+                            Senden
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Business Analyst Agent. Powered by Gemini AI.</p>
+        </div>
+    </footer>
+    <script>
+        // Embedding Monitor Class
+        class EmbeddingMonitor {
+            constructor() {
+                this.currentProcess = null;
+                this.embeddingStats = {
+                    totalDocuments: 0,
+                    totalChunks: 0,
+                    avgChunkSize: 0,
+                    qualityScore: 0,
+                    chunkSizeDistribution: { optimal: 0, acceptable: 0, poor: 0 },
+                    processingTimes: [],
+                    errors: []
+                };
+                this.documentEmbeddings = new Map();
+                this.currentChunkIndex = 0;
+                this.searchResults = null;
+            }
+            
+            startDocumentProcessing(filename, totalChunks) {
+                this.currentProcess = {
+                    filename: filename,
+                    totalChunks: totalChunks,
+                    processedChunks: 0,
+                    startTime: Date.now(),
+                    chunks: []
+                };
+                
+                this.updateProcessDisplay();
+                const processElement = document.getElementById('current-process');
+                if (processElement) {
+                    processElement.classList.remove('hidden');
+                    processElement.classList.add('active');
+                }
+            }
+            
+            updateChunkProgress(chunkIndex, chunkText, chunkSize, embeddingVector, responseTime) {
+                if (!this.currentProcess) return;
+            
+                this.currentProcess.chunks[chunkIndex] = {
+                    text: chunkText,
+                    size: chunkSize,
+                    embedding: embeddingVector,
+                    responseTime: responseTime,
+                    status: responseTime > 0 ? 'completed' : 'processing'
+                };
+                if (responseTime > 0) {
+                    this.currentProcess.processedChunks++;
+                }
+                this.updateProcessDisplay();
+            }
+            
+            recordError(chunkIndex, error) {
+                this.embeddingStats.errors.push({
+                    chunkIndex: chunkIndex,
+                    error: error.message,
+                    timestamp: new Date()
+                });
+                if (this.currentProcess && chunkIndex >= 0) {
+                    this.currentProcess.chunks[chunkIndex] = {
+                        status: 'error',
+                        error: error.message
+                    };
+                }
+            }
+            
+            completeDocumentProcessing(embeddings = null) {
+                if (!this.currentProcess) return;
+            
+                const processingTime = Date.now() - this.currentProcess.startTime;
+                this.embeddingStats.processingTimes.push(processingTime);
+            
+                const embeddingsToStore = embeddings || this.currentProcess.chunks.filter(chunk => chunk && chunk.embedding);
+                this.documentEmbeddings.set(this.currentProcess.filename, embeddingsToStore);
+                
+                this.updateStats();
+                
+                this.currentProcess = null;
+                const processElement = document.getElementById('current-process');
+                if (processElement) {
+                    processElement.classList.add('hidden');
+                    processElement.classList.remove('active');
+                }
+                
+                this.updateOverviewStats();
+                this.renderEmbeddingList();
+                this.updateQualityAnalysis();
+                this.renderSampleEmbeddings();
+            }
+            
+            updateProcessDisplay() {
+                if (!this.currentProcess) return;
+                const processTitle = document.getElementById('process-title');
+                const processDetails = document.getElementById('process-details');
+                if (processTitle && processDetails) {
+                    processTitle.textContent = `Verarbeite "${this.currentProcess.filename}"`;
+                    processDetails.textContent = `${this.currentProcess.processedChunks} von ${this.currentProcess.totalChunks} Chunks verarbeitet`;
+                }
+            }
+            
+            updateStats() {
+                this.embeddingStats.totalDocuments = this.documentEmbeddings.size;
+                
+                let totalChunks = 0;
+                let totalSize = 0;
+                const chunkSizes = [];
+                for (const [docName, embeddings] of this.documentEmbeddings.entries()) {
+                    totalChunks += embeddings.length;
+                    
+                    for (const embedding of embeddings) {
+                        const size = embedding.size || embedding.text?.length || 0;
+                        totalSize += size;
+                        chunkSizes.push(size);
+                    }
+                }
+                this.embeddingStats.totalChunks = totalChunks;
+                this.embeddingStats.avgChunkSize = totalChunks > 0 ? Math.round(totalSize / totalChunks) : 0;
+                
+                if (chunkSizes.length > 0) {
+                    const optimal = chunkSizes.filter(size => size >= 500 && size <= 1500).length;
+                    const acceptable = chunkSizes.filter(size => (size >= 300 && size < 500) || (size > 1500 && size <= 2000)).length;
+                    const poor = chunkSizes.filter(size => size < 300 || size > 2000).length;
+                    this.embeddingStats.chunkSizeDistribution = {
+                        optimal: Math.round((optimal / chunkSizes.length) * 100),
+                        acceptable: Math.round((acceptable / chunkSizes.length) * 100),
+                        poor: Math.round((poor / chunkSizes.length) * 100)
+                    };
+                    
+                    this.embeddingStats.qualityScore = Math.round(
+                        (optimal * 1.0 + acceptable * 0.7 + poor * 0.3) / chunkSizes.length * 100
+                    );
+                }
+            }
+            
+            updateOverviewStats() {
+                const elements = {
+                    totalDocuments: document.getElementById('total-documents'),
+                    totalChunks: document.getElementById('total-chunks'),
+                    avgChunkSize: document.getElementById('avg-chunk-size'),
+                    embeddingCount: document.getElementById('embedding-count'),
+                    qualityScore: document.getElementById('quality-score'),
+                    qualityFill: document.getElementById('quality-fill')
+                };
+                
+                if (elements.totalDocuments) elements.totalDocuments.textContent = this.embeddingStats.totalDocuments;
+                if (elements.totalChunks) elements.totalChunks.textContent = this.embeddingStats.totalChunks;
+                if (elements.avgChunkSize) elements.avgChunkSize.textContent = this.embeddingStats.avgChunkSize;
+                if (elements.embeddingCount) elements.embeddingCount.textContent = this.embeddingStats.totalDocuments;
+                
+                if (elements.qualityScore && elements.qualityFill) {
+                    if (this.embeddingStats.qualityScore > 0) {
+                        elements.qualityScore.textContent = this.embeddingStats.qualityScore + '%';
+                        elements.qualityFill.style.width = this.embeddingStats.qualityScore + '%';
+                        
+                        elements.qualityFill.className = 'quality-fill';
+                        if (this.embeddingStats.qualityScore >= 80) {
+                            elements.qualityFill.classList.add('excellent');
+                        } else if (this.embeddingStats.qualityScore >= 60) {
+                            elements.qualityFill.classList.add('good');
+                        } else if (this.embeddingStats.qualityScore >= 40) {
+                            elements.qualityFill.classList.add('fair');
+                        } else {
+                            elements.qualityFill.classList.add('poor');
+                        }
+                    } else {
+                        elements.qualityScore.textContent = 'N/A';
+                        elements.qualityFill.style.width = '0%';
+                    }
+                }
+            }
+            
+            renderEmbeddingList() {
+                const embeddingList = document.getElementById('embedding-list');
+                if (!embeddingList) return;
+                
+                if (this.documentEmbeddings.size === 0) {
+                    embeddingList.innerHTML = `
+                        <div style="padding: 2rem; text-align: center; color: var(--text-secondary);">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.3; margin-bottom: 1rem;"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/></svg>
+                            <p>Keine Embeddings verfügbar</p>
+                            <p style="font-size: 0.8rem; margin-top: 0.5rem;">Laden Sie Dokumente hoch, um Embeddings zu erstellen</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                let html = '';
+                for (const [docName, embeddings] of this.documentEmbeddings.entries()) {
+                    html += `
+                        <div class="chunk-item" style="background: var(--brand-accent); font-weight: 600;">
+                            <div class="chunk-info">
+                                <div class="chunk-text">${docName}</div>
+                                <div class="chunk-meta">${embeddings.length} Chunks erstellt</div>
+                            </div>
+                            <div class="chunk-status">
+                                <span class="meta-badge processed">Verarbeitet</span>
+                            </div>
+                        </div>
+                    `;
+                    
+                    const sampleChunks = embeddings.slice(0, 3);
+                    sampleChunks.forEach((embedding, index) => {
+                        const responseTime = embedding.responseTime || 0;
+                        const statusBadge = responseTime > 0 
+                            ? `<span class="meta-badge processed">${responseTime}ms</span>`
+                            : `<span class="meta-badge">Processing...</span>`;
+                                            
+                        const chunkText = embedding.text || 'No text available';
+                        const chunkSize = embedding.size || chunkText.length;
+                                            
+                        html += `
+                            <div class="chunk-item">
+                                <div class="chunk-info">
+                                    <div class="chunk-text">Chunk #${index + 1}: ${chunkText.substring(0, 80)}...</div>
+                                    <div class="chunk-meta">${chunkSize} Zeichen</div>
+                                </div>
+                                <div class="chunk-status">
+                                    ${statusBadge}
+                                </div>
+                            </div>
+                        `;
+                    });
+                    
+                    if (embeddings.length > 3) {
+                        html += `
+                            <div class="chunk-item" style="font-style: italic; color: var(--text-secondary);">
+                                <div class="chunk-info">
+                                    <div class="chunk-text">... und ${embeddings.length - 3} weitere Chunks</div>
+                                </div>
+                            </div>
+                        `;
+                    }
+                }
+                embeddingList.innerHTML = html;
+            }
+            
+            updateQualityAnalysis() {
+                const dist = this.embeddingStats.chunkSizeDistribution;
+                const elements = {
+                    optimal: document.getElementById('optimal-chunks'),
+                    acceptable: document.getElementById('acceptable-chunks'),
+                    poor: document.getElementById('poor-chunks')
+                };
+                
+                if (elements.optimal) elements.optimal.textContent = dist.optimal + '%';
+                if (elements.acceptable) elements.acceptable.textContent = dist.acceptable + '%';
+                if (elements.poor) elements.poor.textContent = dist.poor + '%';
+            }
+            
+            renderSampleEmbeddings() {
+                const sampleContainer = document.getElementById('sample-embeddings');
+                if (!sampleContainer) return;
+                
+                if (this.documentEmbeddings.size === 0) {
+                    sampleContainer.innerHTML = `
+                        <div style="padding: 2rem; text-align: center; color: var(--text-secondary);">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.3; margin-bottom: 1rem;"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                            <p>Keine Sample-Embeddings verfügbar</p>
+                            <p style="font-size: 0.8rem; margin-top: 0.5rem;">Erstellen Sie Embeddings um Samples anzuzeigen</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                let html = '';
+                let sampleCount = 0;
+                for (const [docName, embeddings] of this.documentEmbeddings.entries()) {
+                    if (sampleCount >= 2) break;
+                    
+                    const sample = embeddings[0];
+                    if (sample) {
+                        const embeddingVector = sample.embedding;
+                        const chunkText = sample.text || 'No text available';
+                        if (embeddingVector && Array.isArray(embeddingVector) && embeddingVector.length > 0) {
+                            const embeddingValues = embeddingVector.slice(0, 20);
+                            html += `
+                                <div class="embedding-sample">
+                                    <div style="font-weight: 600; margin-bottom: 0.5rem;">
+                                        ${docName} - Chunk #1
+                                    </div>
+                                    <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.5rem;">
+                                        Text: "${chunkText.substring(0, 100)}..."
+                                    </div>
+                                    <div style="font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 0.5rem;">
+                                        Embedding Vector (erste 20 Werte):
+                                    </div>
+                                    <div class="embedding-preview">
+                                        ${embeddingValues.map(val => 
+                                            `<span class="embedding-value">${typeof val === 'number' ? val.toFixed(3) : val}</span>`
+                                        ).join('')}
+                                        ${embeddingVector.length > 20 ? '<span style="color: var(--text-secondary); font-size: 0.7rem;">...</span>' : ''}
+                                    </div>
+                                    <div style="font-size: 0.7rem; color: var(--text-secondary); margin-top: 0.5rem;">
+                                        Dimensionen: ${embeddingVector.length}
+                                    </div>
+                                </div>
+                            `;
+                        } else {
+                            html += `
+                                <div class="embedding-sample">
+                                    <div style="font-weight: 600; margin-bottom: 0.5rem;">
+                                        ${docName} - Chunk #1
+                                    </div>
+                                    <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.5rem;">
+                                        Text: "${chunkText.substring(0, 100)}..."
+                                    </div>
+                                    <div style="font-size: 0.8rem; color: var(--accent-error); margin-top: 0.5rem;">
+                                        ⚠ Embedding Vector nicht verfügbar
+                                    </div>
+                                </div>
+                            `;
+                        }
+                        sampleCount++;
+                    }
+                }
+                
+                if (html === '') {
+                    html = `
+                        <div style="padding: 2rem; text-align: center; color: var(--text-secondary);">
+                            <p>Keine gültigen Embeddings gefunden</p>
+                            <p style="font-size: 0.8rem; margin-top: 0.5rem;">Stellen Sie sicher, dass Embeddings korrekt erstellt wurden</p>
+                        </div>
+                    `;
+                }
+                sampleContainer.innerHTML = html;
+            }
+            
+            updateSearchResults(query, results) {
+                const sampleContainer = document.getElementById('sample-embeddings');
+                if (!sampleContainer) return;
+                
+                const existingSearch = sampleContainer.querySelector('.search-results-section');
+                if (existingSearch) {
+                    existingSearch.remove();
+                }
+                if (results.length === 0) return;
+                
+                const searchSection = document.createElement('div');
+                searchSection.className = 'search-results-section';
+                searchSection.innerHTML = `
+                    <h4 style="font-size: 1rem; margin: 1.5rem 0 1rem 0; color: var(--text-primary);">
+                        🔍 Letzte Suche: "${query.substring(0, 50)}${query.length > 50 ? '...' : ''}"
+                    </h4>
+                    <div class="search-results">
+                        ${results.map((result, index) => `
+                            <div class="search-result-item">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                    <span style="font-size: 0.8rem; color: var(--text-secondary);">${result.documentName} - Chunk #${(result.chunkIndex || 0) + 1}</span>
+                                    <span class="similarity-score">Ähnlichkeit: ${(result.similarity * 100).toFixed(1)}%</span>
+                                </div>
+                                <div style="font-size: 0.85rem; color: var(--text-primary); line-height: 1.4; background: var(--bg-tertiary); padding: 0.5rem; border-radius: var(--border-radius);">
+                                    ${result.text.substring(0, 150)}...
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                sampleContainer.appendChild(searchSection);
+            }
+            
+            getDocumentEmbeddings(filename) {
+                return this.documentEmbeddings.get(filename) || [];
+            }
+            
+            getAllEmbeddings() {
+                const allEmbeddings = [];
+                for (const [docName, embeddings] of this.documentEmbeddings.entries()) {
+                    embeddings.forEach((embedding, index) => {
+                        allEmbeddings.push({
+                            ...embedding,
+                            documentName: docName,
+                            chunkIndex: index
+                        });
+                    });
+                }
+                return allEmbeddings;
+            }
+            
+            clearAllEmbeddings() {
+                this.documentEmbeddings.clear();
+                this.embeddingStats = {
+                    totalDocuments: 0,
+                    totalChunks: 0,
+                    avgChunkSize: 0,
+                    qualityScore: 0,
+                    chunkSizeDistribution: { optimal: 0, acceptable: 0, poor: 0 },
+                    processingTimes: [],
+                    errors: []
+                };
+                this.updateOverviewStats();
+                this.renderEmbeddingList();
+                this.updateQualityAnalysis();
+                this.renderSampleEmbeddings();
+            }
+        }
+
+        // Enhanced Gemini RAG System with Monitoring
+        class GeminiRAGSystem {
+            constructor() {
+                this.apiKey = '';
+                this.baseUrl = 'https://generativelanguage.googleapis.com/v1beta';
+                this.documentEmbeddings = new Map();
+                this.isConnected = false;
+                this.consecutiveErrors = 0;
+            }
+
+            async initialize(apiKey) {
+                this.apiKey = apiKey;
+                console.log('🔗 Attempting to connect to Gemini AI...');
+                
+                try {
+                    const testUrl = `${this.baseUrl}/models?key=${this.apiKey}`;
+                    console.log('📡 Testing API connection to:', testUrl.replace(this.apiKey, 'API_KEY_HIDDEN'));
+                    
+                    const response = await fetch(testUrl, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    
+                    console.log('📋 API Response status:', response.status);
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        console.log('✅ Available models:', data.models?.length || 0);
+                        
+                        this.isConnected = true;
+                        state.apiConnected = true;
+                        state.apiKey = apiKey;
+                        
+                        updateConnectionStatus(true);
+                        showFeedback('Gemini AI erfolgreich verbunden! ' + (data.models?.length || 0) + ' Modelle verfügbar.', 'success');
+                        return true;
+                    } else {
+                        const errorText = await response.text();
+                        console.error('❌ API Error:', response.status, errorText);
+                        
+                        let errorMessage = 'API-Verbindung fehlgeschlagen';
+                        if (response.status === 400) {
+                            errorMessage = 'Ungültiger API-Schlüssel oder Request';
+                        } else if (response.status === 403) {
+                            errorMessage = 'API-Schlüssel ungültig oder keine Berechtigung';
+                        } else if (response.status === 429) {
+                            errorMessage = 'Rate Limit erreicht - versuchen Sie es später erneut';
+                        } else {
+                            errorMessage = `HTTP ${response.status}: ${errorText}`;
+                        }
+                        
+                        throw new Error(errorMessage);
+                    }
+                } catch (error) {
+                    console.error('❌ Connection failed:', error);
+                    this.isConnected = false;
+                    state.apiConnected = false;
+                    updateConnectionStatus(false);
+                    
+                    if (error.name === 'TypeError' && error.message.includes('fetch')) {
+                        showFeedback('Netzwerkfehler: Prüfen Sie Ihre Internetverbindung', 'error');
+                    } else {
+                        showFeedback('Verbindung fehlgeschlagen: ' + error.message, 'error');
+                    }
+                    return false;
+                }
+            }
+
+            async embedDocument(text, filename) {
+                if (!this.isConnected) throw new Error('Nicht verbunden');
+                
+                const chunks = this.splitTextIntoChunks(text, 1000);
+                const embeddings = [];
+                
+                if (window.embeddingMonitor) {
+                    window.embeddingMonitor.startDocumentProcessing(filename, chunks.length);
+                }
+                
+                for (let i = 0; i < chunks.length; i++) {
+                    try {
+                        const startTime = Date.now();
+                        
+                        if (window.embeddingMonitor) {
+                            window.embeddingMonitor.updateChunkProgress(
+                                i, 
+                                chunks[i], 
+                                chunks[i].length, 
+                                null,
+                                0
+                            );
+                        }
+                        
+                        const embedding = await this.getEmbeddingWithRetry(chunks[i]);
+                        const responseTime = Date.now() - startTime;
+                        
+                        embeddings.push({ 
+                            text: chunks[i], 
+                            embedding: embedding,
+                            size: chunks[i].length,
+                            chunkIndex: i,
+                            responseTime: responseTime
+                        });
+                        
+                        if (window.embeddingMonitor) {
+                            window.embeddingMonitor.updateChunkProgress(
+                                i, 
+                                chunks[i], 
+                                chunks[i].length, 
+                                embedding,
+                                responseTime
+                            );
+                        }
+                        
+                        const percent = Math.round(((i + 1) / chunks.length) * 100);
+                        updateProgress(percent, `${filename}: ${i + 1} von ${chunks.length} Chunks`);
+                        
+                        if (i < chunks.length - 1) {
+                            await new Promise(resolve => setTimeout(resolve, 2000));
+                        }
+                        
+                    } catch (error) {
+                        console.warn(`Failed to embed chunk ${i}:`, error.message);
+                        
+                        if (window.embeddingMonitor) {
+                            window.embeddingMonitor.recordError(i, error);
+                        }
+                        
+                        if (this.consecutiveErrors >= 3) {
+                            throw new Error(`Zu viele Embedding-Fehler: ${error.message}`);
+                        }
+                    }
+                }
+                
+                if (window.embeddingMonitor) {
+                    window.embeddingMonitor.completeDocumentProcessing(embeddings);
+                }
+                
+                this.documentEmbeddings.set(filename, embeddings);
+                return embeddings.length;
+            }
+
+            async getEmbeddingWithRetry(text, maxRetries = 3) {
+                for (let attempt = 0; attempt < maxRetries; attempt++) {
+                    try {
+                        const response = await fetch(`${this.baseUrl}/models/embedding-001:embedContent?key=${this.apiKey}`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                model: 'models/embedding-001',
+                                content: { parts: [{ text: text }] }
+                            })
+                        });
+                        
+                        if (!response.ok) {
+                            if (response.status === 429) {
+                                const waitTime = Math.pow(2, attempt) * 2000;
+                                await new Promise(resolve => setTimeout(resolve, waitTime));
+                                continue;
+                            }
+                            throw new Error(`Embedding failed: ${response.status}`);
+                        }
+                        
+                        const data = await response.json();
+                        this.consecutiveErrors = 0;
+                        return data.embedding.values;
+                    } catch (error) {
+                        this.consecutiveErrors++;
+                        if (attempt === maxRetries - 1) {
+                            throw error;
+                        }
+                        await new Promise(resolve => setTimeout(resolve, 1000 * (attempt + 1)));
+                    }
+                }
+            }
+
+            splitTextIntoChunks(text, maxSize) {
+                const chunks = [];
+                const paragraphs = text.split(/\n\s*\n/);
+                let currentChunk = '';
+                
+                for (const paragraph of paragraphs) {
+                    if (currentChunk.length + paragraph.length > maxSize && currentChunk.length > 0) {
+                        chunks.push(currentChunk.trim());
+                        currentChunk = paragraph;
+                    } else {
+                        currentChunk += (currentChunk ? '\n\n' : '') + paragraph;
+                    }
+                }
+                
+                if (currentChunk.trim()) {
+                    chunks.push(currentChunk.trim());
+                }
+                
+                return chunks.filter(chunk => chunk.length > 0);
+            }
+
+            async findRelevantDocuments(query, topK = 5) {
+                if (!this.isConnected || this.documentEmbeddings.size === 0) {
+                    return [];
+                }
+                
+                try {
+                    const queryEmbedding = await this.getEmbeddingWithRetry(query);
+                    const similarities = [];
+                    
+                    for (const [docName, embeddings] of this.documentEmbeddings.entries()) {
+                        for (const embedding of embeddings) {
+                            const similarity = this.cosineSimilarity(queryEmbedding, embedding.embedding);
+                            similarities.push({
+                                documentName: docName,
+                                text: embedding.text,
+                                similarity: similarity,
+                                chunkIndex: embedding.chunkIndex || 0
+                            });
+                        }
+                    }
+                    
+                    const results = similarities
+                        .sort((a, b) => b.similarity - a.similarity)
+                        .slice(0, topK);
+                    
+                    if (window.embeddingMonitor && results.length > 0) {
+                        window.embeddingMonitor.updateSearchResults(query, results);
+                    }
+                    
+                    return results;
+                } catch (error) {
+                    console.error('Error finding relevant documents:', error);
+                    showFeedback('Warnung: Dokumentensuche fehlgeschlagen, generiere Antwort ohne Kontext.', 'error');
+                    return [];
+                }
+            }
+
+            cosineSimilarity(a, b) {
+                const dotProduct = a.reduce((sum, val, i) => sum + val * b[i], 0);
+                const magnitudeA = Math.sqrt(a.reduce((sum, val) => sum + val * val, 0));
+                const magnitudeB = Math.sqrt(b.reduce((sum, val) => sum + val * val, 0));
+                return dotProduct / (magnitudeA * magnitudeB);
+            }
+
+            async generateResponse(query, context = '') {
+                if (!this.isConnected) throw new Error('Nicht verbunden');
+
+                const prompt = context 
+                    ? `Basierend auf den folgenden Dokumenten:\n\n${context}\n\nBitte beantworte folgende Frage: ${query}\n\nAntworte auf Deutsch und strukturiert.`
+                    : `Bitte beantworte folgende Frage: ${query}\n\nAntworte auf Deutsch und strukturiert.`;
+
+                try {
+                    const response = await fetch(`${this.baseUrl}/models/gemini-pro:generateContent?key=${this.apiKey}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            contents: [{ parts: [{ text: prompt }] }]
+                        })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`Response generation failed: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+                    return data.candidates[0].content.parts[0].text;
+                } catch (error) {
+                    console.error('Error generating response:', error);
+                    throw error;
+                }
+            }
+        }
+
+        // Application State
+        const state = {
+            documents: [],
+            history: [],
+            templates: JSON.parse(localStorage.getItem('templates')) || [
+                {
+                    id: 't1',
+                    name: 'Standard Analyse',
+                    content: `## ANALYSEERGEBNIS\n\n**Analysierte Dokumente:**\n{DOKUMENTE}\n\n**Zusammenfassung:**\n{ZUSAMMENFASSUNG}\n\n**Identifizierte Probleme:**\n{PROBLEME}\n\n**Empfohlene Maßnahmen:**\n{EMPFEHLUNGEN}\n\n**Compliance-Status:**\n{COMPLIANCE}\n\n**Nächste Schritte:**\n{NÄCHSTE_SCHRITTE}`
+                }
+            ],
+            currentTemplate: null,
+            activeTemplateId: null,
+            apiConnected: false,
+            apiKey: ''
+        };
+
+        // Global variables
+        let geminiRAG;
+
+        // Initialize application
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Business Analyst Agent starting...');
+            
+            // Global error handler
+            window.addEventListener('error', function(event) {
+                console.error('❌ Global error caught:', event.error);
+                showFeedback('Ein Fehler ist aufgetreten: ' + event.error.message, 'error');
+            });
+
+            window.addEventListener('unhandledrejection', function(event) {
+                console.error('❌ Unhandled promise rejection:', event.reason);
+                showFeedback('Async Fehler: ' + event.reason, 'error');
+                event.preventDefault();
+            });
+
+            // Initialize Embedding Monitor
+            try {
+                window.embeddingMonitor = new EmbeddingMonitor();
+                console.log('✅ Embedding Monitor initialized');
+            } catch (error) {
+                console.error('❌ Error initializing Embedding Monitor:', error);
+            }
+
+            // Initialize Gemini RAG System
+            try {
+                geminiRAG = new GeminiRAGSystem();
+                console.log('✅ Gemini RAG System initialized');
+            } catch (error) {
+                console.error('❌ Error initializing Gemini RAG:', error);
+            }
+
+            // Load saved API key
+            const savedApiKey = localStorage.getItem('gemini-api-key');
+            if (savedApiKey) {
+                document.getElementById('gemini-api-key').value = savedApiKey;
+            }
+
+            // Setup event listeners
+            setupEventListeners();
+            setupThemeToggle();
+            setupTabs();
+            setupTemplates();
+            setupFileUpload();
+            setupChat();
+
+            // Update UI
+            updateDocumentList();
+            updateHistoryList();
+            updateDocumentCount();
+        });
+
+        // Event Listeners Setup
+        function setupEventListeners() {
+            // API Connection
+            document.getElementById('connect-gemini').addEventListener('click', async function() {
+                const apiKey = document.getElementById('gemini-api-key').value.trim();
+                if (!apiKey) {
+                    showFeedback('Bitte geben Sie einen gültigen API-Schlüssel ein', 'error');
+                    return;
+                }
+
+                this.disabled = true;
+                this.textContent = 'Verbinde...';
+
+                try {
+                    const success = await geminiRAG.initialize(apiKey);
+                    if (success) {
+                        localStorage.setItem('gemini-api-key', apiKey);
+                        document.getElementById('test-connection').disabled = false;
+                    }
+                } catch (error) {
+                    console.error('Connection error:', error);
+                } finally {
+                    this.disabled = false;
+                    this.textContent = 'Verbinden';
+                }
+            });
+
+            // Test Connection
+            document.getElementById('test-connection').addEventListener('click', async function() {
+                if (!geminiRAG.isConnected) {
+                    showFeedback('Bitte verbinden Sie sich zuerst mit Gemini AI', 'error');
+                    return;
+                }
+
+                this.disabled = true;
+                this.textContent = 'Teste...';
+
+                try {
+                    const testResponse = await geminiRAG.generateResponse('Hallo, bist du verbunden?');
+                    showFeedback('✅ Verbindungstest erfolgreich: ' + testResponse.substring(0, 100) + '...', 'success');
+                } catch (error) {
+                    showFeedback('❌ Verbindungstest fehlgeschlagen: ' + error.message, 'error');
+                } finally {
+                    this.disabled = false;
+                    this.textContent = 'Test Verbindung';
+                }
+            });
+        }
+
+        // Theme Toggle
+        function setupThemeToggle() {
+            const themeToggle = document.getElementById('theme-toggle');
+            const body = document.body;
+            const moonIcon = themeToggle.querySelector('.moon-icon');
+            const sunIcon = themeToggle.querySelector('.sun-icon');
+
+            // Load saved theme
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            body.setAttribute('data-theme', savedTheme);
+            
+            if (savedTheme === 'dark') {
+                moonIcon.classList.add('hidden');
+                sunIcon.classList.remove('hidden');
+            }
+
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = body.getAttribute('data-theme');
+                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                
+                body.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+
+                if (newTheme === 'dark') {
+                    moonIcon.classList.add('hidden');
+                    sunIcon.classList.remove('hidden');
+                } else {
+                    moonIcon.classList.remove('hidden');
+                    sunIcon.classList.add('hidden');
+                }
+            });
+        }
+
+        // Tabs Setup
+        function setupTabs() {
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            const tabPanes = document.querySelectorAll('.tab-content-pane');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const targetTab = this.getAttribute('data-tab');
+
+                    // Remove active from all tabs
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabPanes.forEach(pane => pane.classList.add('hidden'));
+
+                    // Add active to clicked tab
+                    this.classList.add('active');
+                    document.getElementById(targetTab + '-tab').classList.remove('hidden');
+                });
+            });
+        }
+
+        // Templates Setup
+        function setupTemplates() {
+            const templateSelector = document.getElementById('template-selector');
+            const templateNameInput = document.getElementById('template-name-input');
+            const templateEditor = document.getElementById('template-editor');
+            const saveBtn = document.getElementById('save-template-btn');
+            const deleteBtn = document.getElementById('delete-template-btn');
+            const useBtn = document.getElementById('use-template-btn');
+            const showTemplateBtn = document.getElementById('show-template-btn');
+            const templateArea = document.getElementById('template-area');
+
+            // Load templates into selector
+            function loadTemplates() {
+                templateSelector.innerHTML = '<option value="">-- Neue Vorlage erstellen --</option>';
+                state.templates.forEach(template => {
+                    const option = document.createElement('option');
+                    option.value = template.id;
+                    option.textContent = template.name;
+                    templateSelector.appendChild(option);
+                });
+            }
+
+            // Template variable clicks
+            document.querySelectorAll('.template-variable').forEach(variable => {
+                variable.addEventListener('click', function() {
+                    const varText = this.getAttribute('data-var');
+                    const editor = document.getElementById('template-editor');
+                    const cursorPos = editor.selectionStart;
+                    const text = editor.value;
+                    editor.value = text.slice(0, cursorPos) + varText + text.slice(cursorPos);
+                    editor.focus();
+                    editor.setSelectionRange(cursorPos + varText.length, cursorPos + varText.length);
+                });
+            });
+
+            // Show/hide template area
+            showTemplateBtn.addEventListener('click', function() {
+                templateArea.classList.toggle('hidden');
+                this.textContent = templateArea.classList.contains('hidden') ? 'Vorlagen' : 'Verbergen';
+            });
+
+            // Template selector change
+            templateSelector.addEventListener('change', function() {
+                const templateId = this.value;
+                if (templateId) {
+                    const template = state.templates.find(t => t.id === templateId);
+                    if (template) {
+                        templateNameInput.value = template.name;
+                        templateEditor.value = template.content;
+                        state.activeTemplateId = templateId;
+                        deleteBtn.disabled = false;
+                    }
+                } else {
+                    templateNameInput.value = '';
+                    templateEditor.value = '';
+                    state.activeTemplateId = null;
+                    deleteBtn.disabled = true;
+                }
+            });
+
+            // Save template
+            saveBtn.addEventListener('click', function() {
+                const name = templateNameInput.value.trim();
+                const content = templateEditor.value.trim();
+
+                if (!name || !content) {
+                    showFeedback('Bitte geben Sie einen Namen und Inhalt ein', 'error');
+                    return;
+                }
+
+                let template;
+                if (state.activeTemplateId) {
+                    // Update existing
+                    template = state.templates.find(t => t.id === state.activeTemplateId);
+                    template.name = name;
+                    template.content = content;
+                } else {
+                    // Create new
+                    template = {
+                        id: 't' + Date.now(),
+                        name: name,
+                        content: content
+                    };
+                    state.templates.push(template);
+                    state.activeTemplateId = template.id;
+                }
+
+                localStorage.setItem('templates', JSON.stringify(state.templates));
+                loadTemplates();
+                templateSelector.value = state.activeTemplateId;
+                deleteBtn.disabled = false;
+                showFeedback('Vorlage gespeichert', 'success');
+            });
+
+            // Delete template
+            deleteBtn.addEventListener('click', function() {
+                if (!state.activeTemplateId) return;
+
+                if (confirm('Möchten Sie diese Vorlage wirklich löschen?')) {
+                    state.templates = state.templates.filter(t => t.id !== state.activeTemplateId);
+                    localStorage.setItem('templates', JSON.stringify(state.templates));
+                    loadTemplates();
+                    templateNameInput.value = '';
+                    templateEditor.value = '';
+                    state.activeTemplateId = null;
+                    deleteBtn.disabled = true;
+                    showFeedback('Vorlage gelöscht', 'success');
+                }
+            });
+
+            // Use template
+            useBtn.addEventListener('click', function() {
+                const content = templateEditor.value;
+                if (content) {
+                    document.getElementById('chat-input').value = content;
+                    templateArea.classList.add('hidden');
+                    showTemplateBtn.textContent = 'Vorlagen';
+                    showFeedback('Vorlage in Chat eingefügt', 'success');
+                }
+            });
+
+            loadTemplates();
+        }
+
+        // File Upload Setup
+        function setupFileUpload() {
+            const uploadArea = document.getElementById('upload-area');
+            const fileInput = document.getElementById('files-input');
+            const fileSelectBtn = document.getElementById('file-select-btn');
+
+            // Click to select files
+            fileSelectBtn.addEventListener('click', () => fileInput.click());
+            uploadArea.addEventListener('click', () => fileInput.click());
+
+            // Drag and drop
+            uploadArea.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                this.classList.add('dragging');
+            });
+
+            uploadArea.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                this.classList.remove('dragging');
+            });
+
+            uploadArea.addEventListener('drop', function(e) {
+                e.preventDefault();
+                this.classList.remove('dragging');
+                const files = e.dataTransfer.files;
+                processFiles(files);
+            });
+
+            // File input change
+            fileInput.addEventListener('change', function() {
+                processFiles(this.files);
+            });
+        }
+
+        // Chat Setup
+        function setupChat() {
+            const chatInput = document.getElementById('chat-input');
+            const sendButton = document.getElementById('send-button');
+
+            // Send message on button click
+            sendButton.addEventListener('click', sendMessage);
+
+            // Send message on Enter (but allow Shift+Enter for new line)
+            chatInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            });
+
+            // Auto-resize textarea
+            chatInput.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+            });
+        }
+
+        // File Processing
+        async function processFiles(files) {
+            if (!geminiRAG?.isConnected) {
+                showFeedback('Bitte verbinden Sie sich zuerst mit Gemini AI', 'error');
+                return;
+            }
+
+            const processingStatus = document.getElementById('processing-status');
+            const progressBar = document.getElementById('progress-bar');
+            const progressText = document.getElementById('progress-text');
+
+            processingStatus.classList.add('active');
+            
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                
+                try {
+                    console.log(`Processing file: ${file.name}`);
+                    
+                    // Read file content
+                    const text = await readFileAsText(file);
+                    
+                    // Create document object
+                    const doc = {
+                        id: Date.now() + '_' + i,
+                        name: file.name,
+                        type: file.type || 'text/plain',
+                        size: file.size,
+                        content: text,
+                        uploadDate: new Date(),
+                        embeddings: 0,
+                        processed: false
+                    };
+
+                    // Add to documents
+                    state.documents.push(doc);
+
+                    // Generate embeddings
+                    const embeddingCount = await geminiRAG.embedDocument(text, file.name);
+                    doc.embeddings = embeddingCount;
+                    doc.processed = true;
+
+                    // Add to history
+                    addToHistory(`Dokument "${file.name}" hochgeladen und verarbeitet`, 'upload', {
+                        fileName: file.name,
+                        embeddings: embeddingCount
+                    });
+
+                    console.log(`✅ File processed: ${file.name} with ${embeddingCount} embeddings`);
+
+                } catch (error) {
+                    console.error(`❌ Error processing ${file.name}:`, error);
+                    showFeedback(`Fehler beim Verarbeiten von ${file.name}: ${error.message}`, 'error');
+                }
+            }
+
+            processingStatus.classList.remove('active');
+            updateDocumentList();
+            updateDocumentCount();
+            updateProgress(0, '');
+            
+            showFeedback(`${files.length} Datei(en) erfolgreich verarbeitet`, 'success');
+        }
+
+        // Read file as text
+        function readFileAsText(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = (e) => resolve(e.target.result);
+                reader.onerror = (e) => reject(new Error('Fehler beim Lesen der Datei'));
+                reader.readAsText(file);
+            });
+        }
+
+        // Send Chat Message
+        async function sendMessage() {
+            const chatInput = document.getElementById('chat-input');
+            const message = chatInput.value.trim();
+            
+            if (!message) return;
+            
+            if (!geminiRAG?.isConnected) {
+                showFeedback('Bitte verbinden Sie sich zuerst mit Gemini AI', 'error');
+                return;
+            }
+
+            // Clear input
+            chatInput.value = '';
+            chatInput.style.height = 'auto';
+
+            // Add user message to chat
+            addMessage(message, 'user');
+
+            // Disable send button
+            const sendButton = document.getElementById('send-button');
+            sendButton.disabled = true;
+            sendButton.textContent = 'Generiere...';
+
+            try {
+                // Find relevant documents
+                const relevantDocs = await geminiRAG.findRelevantDocuments(message, 5);
+                
+                // Build context from relevant documents
+                let context = '';
+                if (relevantDocs.length > 0) {
+                    context = relevantDocs.map(doc => 
+                        `Dokument: ${doc.documentName}\nInhalt: ${doc.text}\n\n`
+                    ).join('');
+                }
+
+                // Generate response
+                const response = await geminiRAG.generateResponse(message, context);
+                
+                // Add assistant message to chat
+                addMessage(response, 'assistant');
+
+                // Add to history
+                addToHistory(`Chat: "${message.substring(0, 50)}${message.length > 50 ? '...' : ''}"`, 'chat', {
+                    query: message,
+                    response: response.substring(0, 200) + '...',
+                    documentsUsed: relevantDocs.length
+                });
+
+            } catch (error) {
+                console.error('Error generating response:', error);
+                addMessage('Entschuldigung, es ist ein Fehler aufgetreten: ' + error.message, 'assistant');
+                showFeedback('Fehler beim Generieren der Antwort: ' + error.message, 'error');
+            } finally {
+                // Re-enable send button
+                sendButton.disabled = false;
+                sendButton.textContent = 'Senden';
+            }
+        }
+
+        // Add message to chat
+        function addMessage(content, sender) {
+            const chatMessages = document.getElementById('chat-messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            
+            const messageContent = document.createElement('div');
+            messageContent.className = 'message-content';
+            messageContent.textContent = content;
+            
+            messageDiv.appendChild(messageContent);
+            chatMessages.appendChild(messageDiv);
+            
+            // Scroll to bottom
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Update connection status
+        function updateConnectionStatus(connected) {
+            const statusIndicator = document.getElementById('status-indicator');
+            const statusText = document.getElementById('status-text');
+            
+            if (connected) {
+                statusIndicator.classList.add('connected');
+                statusText.textContent = 'Verbunden';
+            } else {
+                statusIndicator.classList.remove('connected');
+                statusText.textContent = 'Nicht verbunden';
+            }
+        }
+
+        // Update progress
+        function updateProgress(percent, text) {
+            const progressBar = document.getElementById('progress-bar');
+            const progressText = document.getElementById('progress-text');
+            
+            if (progressBar) progressBar.style.width = percent + '%';
+            if (progressText) progressText.textContent = text;
+        }
+
+        // Update document list
+        function updateDocumentList() {
+            const docList = document.getElementById('doc-list');
+            const emptyState = document.getElementById('doc-empty-state');
+            
+            if (state.documents.length === 0) {
+                docList.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+            
+            emptyState.classList.add('hidden');
+            
+            docList.innerHTML = state.documents.map(doc => `
+                <div class="list-item">
+                    <div class="list-item-content">
+                        <div class="list-item-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/></svg>
+                        </div>
+                        <div class="list-item-details">
+                            <div class="name">${doc.name}</div>
+                            <div class="meta">
+                                <span class="meta-badge">${formatFileSize(doc.size)}</span>
+                                ${doc.processed ? `<span class="meta-badge processed">${doc.embeddings} Embeddings</span>` : '<span class="meta-badge warning">Verarbeitung...</span>'}
+                                <span class="meta-badge">${formatDate(doc.uploadDate)}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="list-item-actions">
+                        <button class="download-btn" onclick="downloadDocument('${doc.id}')" title="Herunterladen">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                        </button>
+                        <button class="delete-btn" onclick="deleteDocument('${doc.id}')" title="Löschen">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="m19 6-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"/><path d="m10 11 4 4"/><path d="m14 11-4 4"/></svg>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Update history list
+        function updateHistoryList() {
+            const historyList = document.getElementById('history-list');
+            const emptyState = document.getElementById('history-empty-state');
+            
+            if (state.history.length === 0) {
+                historyList.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+            
+            emptyState.classList.add('hidden');
+            
+            historyList.innerHTML = state.history.slice().reverse().map(item => `
+                <div class="list-item">
+                    <div class="list-item-content">
+                        <div class="list-item-icon">
+                            ${getHistoryIcon(item.type)}
+                        </div>
+                        <div class="list-item-details">
+                            <div class="name">${item.action}</div>
+                            <div class="meta">
+                                <span class="meta-badge">${item.type}</span>
+                                <span class="meta-badge">${formatDate(item.timestamp)}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Update document count
+        function updateDocumentCount() {
+            const docCountBadge = document.getElementById('doc-count');
+            if (docCountBadge) {
+                docCountBadge.textContent = state.documents.length;
+            }
+        }
+
+        // Add to history
+        function addToHistory(action, type, details = {}) {
+            state.history.push({
+                id: Date.now(),
+                action: action,
+                type: type,
+                details: details,
+                timestamp: new Date()
+            });
+            updateHistoryList();
+        }
+
+        // Utility functions
+        function showFeedback(message, type = 'success') {
+            const feedback = document.createElement('div');
+            feedback.className = `feedback-message ${type}`;
+            feedback.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    ${type === 'success' 
+                        ? '<polyline points="20 6 9 17 4 12"/>' 
+                        : '<circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>'
+                    }
+                </svg>
+                <span>${message}</span>
+            `;
+            
+            document.body.appendChild(feedback);
+            
+            setTimeout(() => {
+                feedback.remove();
+            }, 5000);
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function formatDate(date) {
+            return new Date(date).toLocaleString('de-DE', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        function getHistoryIcon(type) {
+            const icons = {
+                upload: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>',
+                chat: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 9h8"/><path d="M8 13h6"/><path d="M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3h-5l-5 3v-3H6a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3h12z"/></svg>',
+                delete: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="m19 6-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"/></svg>'
+            };
+            return icons[type] || icons.chat;
+        }
+
+        // Global functions for onclick handlers
+        window.deleteDocument = function(docId) {
+            if (confirm('Möchten Sie dieses Dokument wirklich löschen?')) {
+                state.documents = state.documents.filter(doc => doc.id !== docId);
+                updateDocumentList();
+                updateDocumentCount();
+                
+                // Clear embeddings from monitor
+                if (window.embeddingMonitor) {
+                    window.embeddingMonitor.clearAllEmbeddings();
+                }
+                
+                addToHistory('Dokument gelöscht', 'delete');
+                showFeedback('Dokument erfolgreich gelöscht', 'success');
+            }
+        };
+
+        window.downloadDocument = function(docId) {
+            const doc = state.documents.find(d => d.id === docId);
+            if (doc) {
+                const blob = new Blob([doc.content], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = doc.name;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                addToHistory(`Dokument "${doc.name}" heruntergeladen`, 'download');
+            }
+        };
+    </script>
+</body>
+</html>
